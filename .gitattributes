@@ -1,2 +1,2 @@
-*.env linguist-detectable=false
-*.config.{t,j}s linguist-detectable=false
+**/*.env linguist-detectable=false
+**/*.config.{t,j}s linguist-detectable=false
