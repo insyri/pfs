@@ -1,6 +1,6 @@
 frontend/*.config.js linguist-detectable=false
 frontend/*.config.cjs linguist-detectable=false
-frontend/tailwind.css linguist-detectable=false
-frontend/app.html linguist-detectable=false
+frontend/src/tailwind.css linguist-detectable=false
+frontend/src/app.html linguist-detectable=false
 **/*.env linguist-detectable=false
 **/*.bat linguist-detectable=false
