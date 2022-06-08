@@ -1,2 +1,5 @@
 **/*.env linguist-detectable=false
-**/*.config.{t,j}s linguist-detectable=false
+**/*.config.{t,cj,j}s linguist-detectable=false
+**/*.bat linguist-detectable=false
+**/*.css linguist-detectable=false
+**/*.html linguist-detectable=false
