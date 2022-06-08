@@ -1,0 +1,1 @@
+.\cleanup.bat && docker compose up

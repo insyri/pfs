@@ -4,6 +4,8 @@
     "ms-azuretools.vscode-docker",
     "golang.go",
     "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-next"
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "csstools.postcss",
   ]
 }
