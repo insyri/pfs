@@ -1,3 +1,3 @@
-docker image rm postgres --force
-docker image rm pastebin-file-server_frontend --force
-docker image rm pastebin-file-server_backend --force
+@REM docker image rm pfs-frontend-1 --force
+@REM docker image rm postgres --force
+docker image rm pfs_backend --force

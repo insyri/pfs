@@ -5,3 +5,4 @@ frontend/.svelte-kit
 database
 # *.bat
 # **/.env
+**/dev.Dockerfile

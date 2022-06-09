@@ -10,12 +10,13 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 
 	// Get environment variables
-	env := godotenv.Load("database.env")
+	env := godotenv.Load("./database.env")
 	if env != nil {
 		log.Fatalf("Error loading .env file")
 	}

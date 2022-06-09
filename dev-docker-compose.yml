@@ -7,7 +7,9 @@ services:
   #     - "3000:3000"
   
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
     ports:
       - "8080:8080"
   
