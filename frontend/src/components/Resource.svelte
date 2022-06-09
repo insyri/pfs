@@ -1,14 +1,26 @@
 <script lang="ts">
-	export const method: HttpMethods = "GET"
-	export const resource_url: string = "/somewhere"
-	export const short_description: string = " Ex. Short description."
-	export const description: string =
-		"Example longer description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-	export const parameters: Record<string, string>[] = [{}]
+	import type { ResourceParams } from "./../typings"
+
+	export let method: ResourceParams["method"]
+	export let short_description: ResourceParams["short_description"]
+	export let description: ResourceParams["description"]
+	export let url: ResourceParams["url"]
+	export let request_schema: ResourceParams["request_schema"]
+	export let response_examples: ResourceParams["response_examples"]
+
+	let code: string = `{
+  "ID": 0,
+  "Time": 0,
+  "User": 0,
+  "Map": 0,
+  "Date": 0,
+  "Style": 0,
+  "Mode": 0,
+  "Game": 0
+}`
 
 	import "../tailwind.css"
-	import type { HttpMethods } from "../typings"
-	import CodeBlock from "./CodeBlock.svelte"
+	import Codeblock from "./Codeblock.svelte"
 
 	let showdetails = true // false
 	function invertShowDetails() {
@@ -20,7 +32,7 @@
 <div
 	class={`bg-blue-50 h-15 p-3 border border-blue-400 rounded-md shadow-lg hover:cursor-pointer ${
 		showdetails ? "rounded-b-none" : ""
-	}`}
+	} select-none`}
 	on:click={invertShowDetails}
 >
 	<span
@@ -29,7 +41,7 @@
 		{method}
 	</span>
 	<span class="text-gray-700 font-bold pl-2 pr-2 font-mono text-lg">
-		{resource_url}
+		{url}
 	</span>
 	{short_description}
 </div>
@@ -39,16 +51,8 @@
 	>
 		<span class="block p-6">{description}</span>
 		<div class="h-28 border-b-2 bh-white p-6 bg-white text-bold text-xl">
-			Parameters
+			Schema
 		</div>
-		<CodeBlock
-			code="[
-			&lbrace;
-				'code': 0,
-				'message': 'string',
-				'reference': 'string'
-			&rbrace;
-		]"
-		/>
+		<Codeblock {code} />
 	</div>
 {/if}

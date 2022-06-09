@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
 	import Highlight from "svelte-highlight"
-	import typescript from "svelte-highlight/languages/typescript"
-	import github from "svelte-highlight/styles/github"
+	import json from "svelte-highlight/languages/json"
+	import githubdark from "svelte-highlight/styles/github-dark"
 
-	const code = "const add = (a: number, b: number) => a + b;"
+	export let code: string
 </script>
 
 <svelte:head>
-	{@html github}
+	{@html githubdark}
 </svelte:head>
 
-<Highlight language={typescript} {code} />
+<Highlight class="pt-3 pb-3 text-sm" language={json} {code} />
