@@ -2,7 +2,7 @@ frontend/node_modules
 frontend/.svelte-kit
 **/tmp
 **/dist
+certbot
 database
 # *.bat
 # **/.env
-**/dev.Dockerfile

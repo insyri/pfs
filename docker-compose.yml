@@ -1,15 +1,24 @@
 version: "3.6"
 
 services:
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "3000:3000"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
   
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+
+  nginx:
+    image: nginx
+    ports:
+      - "72:72"
   
   database:
     image: postgres
@@ -19,3 +28,11 @@ services:
       - ./database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+    # certbot:
+    #   image: certbot
+    #   volumes:
+    #     - /etc/letsencrypt:/etc/letsencrypt
+    #     - /var/lib/letsencrypt:/var/lib/letsencrypt
+    #   ports:
+    #     - "4413:443"

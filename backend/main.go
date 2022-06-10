@@ -15,6 +15,15 @@ import (
 
 func main() {
 
+	var (
+		username = os.Getenv("DB_USERNAME")
+		password = os.Getenv("DB_PASSWORD")
+		hostname = "database"
+		dbname   = os.Getenv("DB_NAME")
+	)
+
+	dsn := fmt.Sprintf("host=%s port=5432 user=%s password=%s dbname=%s sslmode=disabled", hostname, username, password, dbname)
+
 	// Get environment variables
 	env := godotenv.Load("./database.env")
 	if env != nil {
@@ -23,7 +32,7 @@ func main() {
 
 	// Connect to database
 	var err error
-	db, err := sql.Open("postgres", "user="+os.Getenv("DB_USERNAME")+" password="+os.Getenv("DB_PASSWORD")+" dbname="+os.Getenv("DB_NAME")+" sslmode=disable")
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,14 +53,18 @@ func main() {
 		MaxDownloads int    `json:"max_downloads"`
 	}
 
-	type Files struct {
-		Files []File `json:"files"`
-	}
+	// type Files struct {
+	// 	Files []File `json:"files"`
+	// }
 
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
 
 	e.GET("/api/:file", func(c echo.Context) error {
 		file := c.Param("file")
