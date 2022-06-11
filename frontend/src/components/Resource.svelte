@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { ResourceParams } from "./../typings"
+	// import { schema } from "../deserialize"
+
+	import type { ResourceParams } from "./../types"
 
 	export let method: ResourceParams["method"]
 	export let short_description: ResourceParams["short_description"]
@@ -8,16 +10,11 @@
 	export let request_schema: ResourceParams["request_schema"]
 	export let response_examples: ResourceParams["response_examples"]
 
-	let code: string = `{
-  "ID": 0,
-  "Time": 0,
-  "User": 0,
-  "Map": 0,
-  "Date": 0,
-  "Style": 0,
-  "Mode": 0,
-  "Game": 0
-}`
+	// let code: string = `{\n  ${request_schema.forEach((element) => {
+	// 	schema(element)
+	// })}\n}`
+
+	let code: string = `{\n "blah": 1\n}`
 
 	import "../tailwind.css"
 	import Codeblock from "./Codeblock.svelte"

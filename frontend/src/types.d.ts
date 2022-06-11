@@ -8,7 +8,7 @@ export type ResourceParams = {
   request_schema: SchemaType[] | null; // null means no schema
   response_examples: Array<{
     http_code: number;
-    response_schema: { [key: string]: SchemaType };
+    response_schema: { [key: string]: Exclude<"optional", SchemaType> };
     elaboration: string;
   }>;
 }
