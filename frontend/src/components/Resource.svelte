@@ -1,5 +1,5 @@
 <script lang="ts">
-	// import { schema } from "../deserialize"
+	import { schema_des } from "../deserialize"
 
 	import type { ResourceParams } from "./../types"
 
@@ -8,13 +8,14 @@
 	export let description: ResourceParams["description"]
 	export let url: ResourceParams["url"]
 	export let request_schema: ResourceParams["request_schema"]
+	export let request_schema_comments: string
 	export let response_examples: ResourceParams["response_examples"]
 
 	// let code: string = `{\n  ${request_schema.forEach((element) => {
 	// 	schema(element)
 	// })}\n}`
 
-	let code: string = `{\n "blah": 1\n}`
+	let code = schema_des(request_schema, request_schema_comments)
 
 	import "../tailwind.css"
 	import Codeblock from "./Codeblock.svelte"
@@ -47,9 +48,28 @@
 		class="h64 border border-blue-400 rounded-md rounded-t-none shadow-lg border-t-0"
 	>
 		<span class="block p-6">{description}</span>
-		<div class="h-28 border-b-2 bh-white p-6 bg-white text-bold text-xl">
+		<div
+			class="border-b-2 bh-white pl-6 p-3 bg-blue-50 text-xl font-bold text-gray-800"
+		>
 			Schema
 		</div>
 		<Codeblock {code} />
+		<div
+			class="border-b-2 bh-white pl-6 p-3 mb-1 bg-blue-50 text-xl font-bold text-gray-800"
+		>
+			Responses
+		</div>
+		<table>
+			<tr>
+				<th class="pl-6 p-3 font-bold">Code</th>
+				<th class="font-bold text-left">Response</th>
+			</tr>
+			<tr>
+				<td class="pl-6 p-3 text-center">200</td>
+				<td class="text-left">
+					<Codeblock code="things" />
+				</td>
+			</tr>
+		</table>
 	</div>
 {/if}
