@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 
 services:
   # frontend:
@@ -15,35 +15,37 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - "database"
-    links:
-      - "database:postgres"
+      - database
 
-  nginx:
-    image: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: always
-    volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    # restart: always
 
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
-    command: certonly --standalone --non-interactive --agree-tos --register-unsafely-without-email
+  # nginx:
+  #   image: nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      # - ./certbot/www:/var/www/certbot/:ro
+      # - ./certbot/conf/:/etc/nginx/ssl/:ro
+
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - ./certbot/www/:/var/www/certbot/:rw
+  #     - ./certbot/conf/:/etc/letsencrypt/:rw
+  #   command: certonly --standalone --non-interactive --agree-tos --register-unsafely-without-email
   
   database:
-    image: postgres
-    env_file:
-      - backend/database.env
+    image: postgres:12.2-alpine
+    # env_file:
+    #   - ./backend/database.env
     volumes:
       - ./database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    command: bash -c 'chown postgres /var/lib/postgresql/data/localhost.crt && chown postgres /var/lib/postgresql/data/localhost.key && chmod 740 /var/lib/postgresql/data/localhost.key && chmod 740 /var/lib/postgresql/data/localhost.crt && chgrp postgres /var/lib/postgresql/data/localhost.key && chgrp postgres /var/lib/postgresql/data/localhost.crt'
-    # && docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

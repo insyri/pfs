@@ -1,28 +1,29 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	_ "github.com/lib/pq"
 )
 
 func main() {
 
 	var (
-		username = os.Getenv("DB_USERNAME")
-		password = os.Getenv("DB_PASSWORD")
+		username = os.Getenv("POSTGRES_USERNAME")
+		password = os.Getenv("POSTGRES_PASSWORD")
 		hostname = "database"
-		dbname   = os.Getenv("DB_NAME")
+		dbname   = os.Getenv("POSTGRES_NAME")
 	)
 
-	dsn := fmt.Sprintf("host=%s port=5432 user=%s password=%s dbname=%s sslmode=disabled", hostname, username, password, dbname)
+	dsn := fmt.Sprintf("host=%s port=5432 user=%s password=%s dbname=%s sslmode=disable", hostname, username, password, dbname)
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")
@@ -30,14 +31,16 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 
+	time.Sleep(5 * time.Second)
+
 	// Connect to database
 	var err error
-	db, err := sql.Open("postgres", dsn)
+	db, err := gorm.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = db.Ping(); err != nil {
+	if err = db.DB().Ping(); err != nil {
 		panic(err)
 	} else {
 		fmt.Println("DB Connected...")
@@ -85,7 +88,7 @@ func main() {
 		}
 
 		sqlStatement := "INSERT INTO " + os.Getenv("DB_NAME") + " (file_name, file_type, size, expires_at, auto_delete, downloads, max_downloads) VALUES ($1, $2, $3, $4, $5, $6, $7)"
-		res, err := db.Query(sqlStatement, file, f.FileType, f.Size, f.Expires, f.AutoDelete, f.Downloads, f.MaxDownloads)
+		res, err := db.DB().Query(sqlStatement, file, f.FileType, f.Size, f.Expires, f.AutoDelete, f.Downloads, f.MaxDownloads)
 		if err != nil {
 			fmt.Println(err)
 		} else {
