@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   # frontend:
@@ -8,16 +8,18 @@ services:
   #   ports:
   #     - "3000:3000"
   
-  backend:
-    build:
-      context: ./backend
-      dockerfile: dev.Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
-
-    # restart: always
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: dev.Dockerfile
+  #   restart: always
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - database
+  #   volumes:
+  #     - ./backend:/go/app/backend
+  #   container_name: api
 
   # nginx:
   #   image: nginx
@@ -29,23 +31,13 @@ services:
   #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
       # - ./certbot/www:/var/www/certbot/:ro
       # - ./certbot/conf/:/etc/nginx/ssl/:ro
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     - ./certbot/www/:/var/www/certbot/:rw
-  #     - ./certbot/conf/:/etc/letsencrypt/:rw
-  #   command: certonly --standalone --non-interactive --agree-tos --register-unsafely-without-email
   
   database:
-    image: postgres:12.2-alpine
-    # env_file:
-    #   - ./backend/database.env
-    volumes:
-      - ./database:/var/lib/postgresql/data
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/database.env
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    container_name: postgresql
