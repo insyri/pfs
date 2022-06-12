@@ -5,7 +5,7 @@ go 1.18
 require github.com/labstack/echo/v4 v4.7.2
 
 require (
-	github.com/andybalholm/brotli v1.0.0 // indirect
+	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/gofiber/utils v0.0.10 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -16,13 +16,14 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/klauspost/compress v1.10.7 // indirect
-	github.com/valyala/fasthttp v1.16.0 // indirect
-	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a // indirect
+	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/valyala/fasthttp v1.37.0 // indirect
+	github.com/valyala/tcplisten v1.0.0 // indirect
 )
 
 require (
 	github.com/gofiber/fiber v1.14.6
+	github.com/gofiber/fiber/v2 v2.34.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/jinzhu/gorm v1.9.16
@@ -34,9 +35,9 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
-	golang.org/x/sys v0.0.0-20211103235746-7861aae1554b // indirect
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
 )

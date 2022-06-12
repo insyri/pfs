@@ -6,11 +6,13 @@ import (
 	"log"
 	"os"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 )
 
 func main() {
+	println("API starting...")
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")
@@ -18,24 +20,26 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 
-	fmt.Println("na")
-
 	// Extract environment variables
 	var (
 		username = os.Getenv("POSTGRES_USER")
 		password = os.Getenv("POSTGRES_PASSWORD")
-		hostname = "database"
+		hostname = "database" // "localhost"
 		dbname   = os.Getenv("POSTGRES_DB")
 	)
 
 	// Connect to database
-	dburl := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname)
-	conn, err := pgx.Connect(context.Background(), dburl)
+	connection, err := pgx.Connect(
+		context.Background(),
+		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname),
+	)
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-	defer conn.Close(context.Background())
+
+	defer connection.Close(context.Background())
 	fmt.Println("Connected to database")
 
 	// Structs
@@ -53,15 +57,22 @@ func main() {
 	// 	Files []File `json:"files"`
 	// }
 
+	app := fiber.New()
 	// e := echo.New()
 
-	// // e.Use(middleware.Logger())
-	// // e.Use(middleware.Recover())
+	// e.Use(middleware.Logger())
+	// e.Use(middleware.Recover())
 
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString(c.Path())
+	})
 	// e.GET("/", func(c echo.Context) error {
 	// 	return c.String(http.StatusOK, "Hello, World!")
 	// })
 
+	app.Get("/:file", func(c *fiber.Ctx) error {
+		return c.SendString(c.Path())
+	})
 	// e.GET("/api/:file", func(c echo.Context) error {
 	// 	file := c.Param("file")
 	// 	return c.String(http.StatusOK, file)

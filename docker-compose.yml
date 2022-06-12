@@ -7,32 +7,36 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-  
+    container_name: website
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "8080:8080"
+    depends_on:
+      - database
+    volumes:
+      - ./backend:/go/app/backend
+    container_name: api
 
-  nginx:
-    image: nginx
-    ports:
-      - "72:72"
+  # nginx:
+  #   image: nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
   
   database:
-    image: postgres
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
     env_file:
-      - backend/database.env
-    volumes:
-      - ./database:/var/lib/postgresql/data
+      - ./backend/database.env
     ports:
       - "5432:5432"
-
-    # certbot:
-    #   image: certbot
-    #   volumes:
-    #     - /etc/letsencrypt:/etc/letsencrypt
-    #     - /var/lib/letsencrypt:/var/lib/letsencrypt
-    #   ports:
-    #     - "4413:443"
+    container_name: postgres
