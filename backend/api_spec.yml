@@ -22,6 +22,11 @@ routes:
 						type: string
 						description: Error message
 						text: File not found
+				- 403:
+					- error:
+						type: string
+						description: Error message
+						text: Forbidden
 			parameters:
 				- password:
 					type: string
