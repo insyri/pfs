@@ -3,9 +3,10 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-bin = "tmp\\main"
-# cmd = "go build -o ./tmp/main ."
-cmd = "go run main.go"
+bin = "tmp/main"
+# bin = "tmp\\main"
+cmd = "go build -o ./tmp/main ."
+# cmd = "go run main.go"
 delay = 1000
 exclude_dir = ["tmp"]
 include_ext = ["go"]

@@ -32,6 +32,16 @@ services:
       # - ./certbot/www:/var/www/certbot/:ro
       # - ./certbot/conf/:/etc/nginx/ssl/:ro
   
+  # air_test:
+  #   image: cosmtrek/air
+  #   working_dir: /go/app/backend
+  #   ports: 
+  #     - "8080:8080"
+  #   volumes:
+  #     - ./backend:/go/app/backend
+  #   container_name: air
+  # https://github.com/cosmtrek/air/issues/190
+  
   database:
     build:
       context: ./postgres
