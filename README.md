@@ -1,3 +1,5 @@
+<img align="right" width="150" src="./frontend/src/assets/directory_computer.svg"/>
+
 # pfs
 
 📂 Server for pasting, uploading, and downloading files.
