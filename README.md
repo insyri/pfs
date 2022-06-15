@@ -2,7 +2,7 @@
 
 # pfs
 
-📂 Server for pasting, uploading, and downloading files.
+📂 Server for pasting, uploading, and downloading files. Built on an API that serves data to the frontend, allowing both developers and casual i-net users to browse the file contents.
 
 [![](https://shields.io/badge/Svelte-05122A?logo=svelte&style=for-the-badge)](https://svelte.dev/)
 [![](https://shields.io/badge/Go-05122A?logo=go&style=for-the-badge)](https://go.dev/)
@@ -14,7 +14,7 @@
 
 ## Deployment/Production
 
-- [Docker](https://www.docker.com/)
+pfs uses [Docker](https://www.docker.com/) to create and manage the programs used to make pfs work, all down to a one-liner that everyone can follow.
 
 ```bash
 docker compose up
