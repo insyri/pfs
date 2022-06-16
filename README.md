@@ -2,7 +2,7 @@
 
 # pfs
 
-📂 Server for pasting, uploading, and downloading files. Built on an API that serves data to the frontend, allowing both developers and casual i-net users to browse the file contents.
+📂 Server for pasting, uploading, and downloading files. Built on an API that serves data to the frontend, allowing both developers and casual i-net users to browse file contents.
 
 [![](https://shields.io/badge/Svelte-05122A?logo=svelte&style=for-the-badge)](https://svelte.dev/)
 [![](https://shields.io/badge/Go-05122A?logo=go&style=for-the-badge)](https://go.dev/)
@@ -12,13 +12,38 @@
 [![](https://shields.io/badge/PostgreSQL-05122A?logo=postgresql&style=for-the-badge)](https://postgresql.org/)
 [![](https://shields.io/badge/Nginx-05122A?logo=nginx&logoColor=009639&style=for-the-badge)](https://nginx.org/)
 
-## Deployment/Production
+<!-- ## Features
 
-pfs uses [Docker](https://www.docker.com/) to create and manage the programs used to make pfs work, all down to a one-liner that everyone can follow.
+...
+
+## Public Instances
+
+... -->
+
+## To start using pfs
+
+pfs uses [Docker](https://www.docker.com/) to create and manage the programs used to make pfs work.
+
+<!-- TODO: make configurable settings in pfs and add them here -->
 
 ```bash
+git clone https://github.com/insyri/pfs
+cd pfs
 docker compose up
 ```
 
 ## Development
-See the [contributing guide](./.github/CONTRIBUTING.md) for development setup.
+
+pfs has a [contributing guide](./.github/CONTRIBUTING.md), it contains contributing guidelines and more in-depth development setup specifications.
+
+If you want to build and run pfs right away, you can run this through
+
+On \*nix[^1] systems, users can run this one liner in the project directory:
+
+```bash
+docker compose -f ./dev-docker-compose.yml
+```
+
+For Windows systems, users will have to use WSL and open the project inside the Linux file system.
+
+[^1]: Unix, unix-like, and unix based. E.g.: MacOS, Linux, and Windows Subsystem for Linux.

@@ -11,16 +11,17 @@ services:
       - ./frontend:/app/frontend
     depends_on:
       - backend
+    container_name: web
   
   backend:
     image: cosmtrek/air
     working_dir: /go/app/backend
     ports:
       - "8080:8080"
-    depends_on:
-      - database
     volumes:
       - ./backend:/go/app/backend
+    depends_on:
+      - database
     container_name: api
 
   # nginx:
@@ -34,9 +35,6 @@ services:
   
   database:
     image: postgres
-    # build:
-    #   context: ./postgres
-    #   dockerfile: Dockerfile
     env_file:
       - ./backend/database.env
     ports:

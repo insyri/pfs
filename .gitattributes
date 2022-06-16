@@ -3,4 +3,3 @@ frontend/*.config.cjs linguist-detectable=false
 frontend/src/tailwind.css linguist-detectable=false
 frontend/src/app.html linguist-detectable=false
 **/*.env linguist-detectable=false
-**/*.sh linguist-detectable=false
