@@ -24,7 +24,7 @@ func main() {
 	var (
 		username = os.Getenv("POSTGRES_USER")
 		password = os.Getenv("POSTGRES_PASSWORD")
-		hostname = "localhost" // "localhost" or "database"
+		hostname = "database"
 		dbname   = os.Getenv("POSTGRES_DB")
 	)
 

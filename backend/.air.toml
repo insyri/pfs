@@ -3,10 +3,8 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-# bin = "tmp/main" # linux
-bin = "tmp\\main.exe" # win
-# cmd = "go build -o ./tmp/main ." # linux
-cmd = "go.exe build -o ./tmp/main.exe ." # win
+bin = "tmp/main"
+cmd = "go build -o ./tmp/main ."
 delay = 1000
 exclude_dir = ["tmp"]
 include_ext = ["go"]
@@ -25,6 +23,3 @@ time = true
 
 [misc]
 clean_on_exit = true
-
-[screen]
-clear_on_rebuild = true

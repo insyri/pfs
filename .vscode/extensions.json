@@ -7,5 +7,6 @@
     "ms-vscode.vscode-typescript-next",
     "bradlc.vscode-tailwindcss",
     "csstools.postcss",
+    "tamasfe.even-better-toml"
   ]
 }

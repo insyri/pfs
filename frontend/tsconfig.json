@@ -1,4 +1,5 @@
 {
+  // .svelte-kit is generated on an npm command to run the application.
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
