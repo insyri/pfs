@@ -21,4 +21,4 @@ docker compose up
 ```
 
 ## Development
-See the [contributing guide](./github/CONTRIBUTING.md) for development setup.
+See the [contributing guide](./.github/CONTRIBUTING.md) for development setup.
