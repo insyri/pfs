@@ -22,7 +22,7 @@ Please create a [fork](https://github.com/insyri/pfs/fork) of the pfs project on
 [Git](https://git-scm.com/) is required to fetch the project from the internet to your local machine and track project file changes.
 
 ```bash
-git clone https://github.com/YOURUSERNAME/pfs
+git clone https://github.com/<YOUR_USERNAME>/pfs
 cd pfs
 ```
 
