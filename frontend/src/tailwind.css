@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-// for dev only rn
-/* html {
-	background-color: black;
-} */
+html {
+	background-color: rgb(19 19 19);
+}

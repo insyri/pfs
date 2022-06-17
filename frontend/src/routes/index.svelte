@@ -8,7 +8,11 @@
 	}
 </script>
 
-<main class="index flex justify-center m-8 bg-black">
+<main>
+	<div class="bg-black h-20 md:h-60 border-b-[1px] border-[#323232]" />
+</main>
+
+<!-- <main class="index flex justify-center m-8">
 	<div
 		class="py-8 px-4 border border-indigo-50 shadow-lg w-5/6 h-96 bg-slate-100"
 	>
@@ -23,5 +27,4 @@
 		</form>
 	</div>
 	<div />
-</main>
-<footer class="border-t-[1px] border-gray-700 px-40 bg-black text-white" />
+</main> -->
