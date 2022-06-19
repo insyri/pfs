@@ -1,4 +1,4 @@
-module github.com/insyri/pfs
+module github.com/insyri/pfs/backend
 
 go 1.18
 
@@ -6,6 +6,8 @@ require github.com/labstack/echo/v4 v4.7.2
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/go-playground/locales v0.14.0 // indirect
+	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/gofiber/utils v0.0.10 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -17,11 +19,13 @@ require (
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/valyala/fasthttp v1.37.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 )
 
 require (
+	github.com/go-playground/validator/v10 v10.11.0
 	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.34.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect

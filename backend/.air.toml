@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
 bin = "tmp/main"
 cmd = "go build -o ./tmp/main ."
-delay = 1000
+delay = 3000
 exclude_dir = ["tmp"]
 include_ext = ["go"]
 log = "build-errors.log"

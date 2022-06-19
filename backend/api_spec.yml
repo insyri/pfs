@@ -1,0 +1,96 @@
+# API should accept both application/json and application/x-www-form-urlencoded response and request content types.
+# All undefined callback methods will return error 405 Method Not Allowed
+# Data / Data Entry = File or paste.
+
+ALL /*:
+  responses:
+    400:
+      error: "Bad Request"
+    408:
+      error: "Request Timeout" # dunno how to impl yet
+    414:
+      error: "Request-URI Too Long"
+    429:
+      error: "Too Many Requests"
+    431:
+      error: "Request Header Fields Too Large"
+    500:
+      error: "Internal Server Error"
+
+GET /:hash:
+  description: Returns details of a data entry.
+  responses:
+    200:
+      size: int # Size of the file in bytes
+      name: string # Name of the file including extension
+      expires_at?: int # UNIX timestamp of expiration, only given if set to auto-delete. Default: 0 (3 days from now)
+      created_at: int # UNIX timestamp of file upload
+      downloads: int # Number of times the file has been downloaded
+      max_downloads?: int # Number of times the file is allowed to be downloaded. Default: 0 (infinite)
+      download: string #  URL to download the file
+    401:
+      error: "Unauthorized"
+    404:
+      error: "Not Found"
+
+  parameters:
+    file_hash: string # Hash of the file to be accessed, provided in the URL
+    password?: string # Password needed to access a password protected file. Only required if the file is password protected.
+
+POST /file:
+  description: Uploads a file entry with metadata.
+  responses:
+    201:
+      admin_key: string
+      download_url: string
+    413:
+      error: "Request Entity Too Large"
+    415:
+      error: "Unsupported Media Type"
+    507:
+      error: "Server Storage Limit Reached"
+
+  parameters:
+    files: file[],
+    expires?: int # Default: now + 3 days
+    auto_delete?: boolean # Default: false
+    max_downloads?: int # Default: 0 (infinite)
+    password?: string
+
+POST /paste:
+  description: Uploads a text entry with metadata.
+  responses:
+    201:
+      admin_key: string
+      download_url: string
+    413:
+      error: "Request Entity Too Large"
+    507:
+      error: "Server Storage Limit Reached"
+
+  parameters:
+    text: string
+    language?: string # Default: "text/txt"
+    expires?: int # Default: now + 3 days
+    auto_delete: boolean # Default: false
+    max_downloads?: int # Default: 0 (infinite)
+    password?: string
+
+DELETE /:hash:
+  description: Deletes a data entry.
+	responses:
+    200:
+      success: boolean # true
+      message: string # "Data entry deleted"
+    401:
+      success: boolean # false
+      message: string # "Authorization key required"
+    403:
+      success: boolean # false
+      message: string # "Authorization key invalid"
+    404:
+      success: boolean # false
+      message: string # "Data entry not found"
+      
+  parameters:
+		admin_key: string

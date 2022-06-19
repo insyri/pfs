@@ -12,7 +12,7 @@ services:
     depends_on:
       - backend
     container_name: web
-  
+
   backend:
     image: cosmtrek/air
     working_dir: /go/app/backend
@@ -23,16 +23,15 @@ services:
     depends_on:
       - database
     container_name: api
+    # nginx:
+    #   image: nginx
+    #   ports:
+    #     - "80:80"
+    #     - "443:443"
+    #   restart: always
+    #   volumes:
+    #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
 
-  # nginx:
-  #   image: nginx
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
-  
   database:
     image: postgres
     env_file:
