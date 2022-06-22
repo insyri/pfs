@@ -62,6 +62,10 @@ func main() {
 	app := fiber.New()
 	api := app.Group("/api")
 
+	api.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("ok its up")
+	})
+
 	// Get /api/:hash
 	api.Get("/:hash", func(c *fiber.Ctx) error {
 		hash := c.Params("hash")
