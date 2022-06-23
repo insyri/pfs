@@ -3,13 +3,37 @@
 
 	let text = "Enter your text here."
 
-	function upload() {
-		console.log(text)
+	function onSubmit(e) {
+		const formData = new FormData(e.target)
+
+		const data = {}
+		for (let field of formData) {
+			const [key, value] = field
+			data[key] = value
+		}
+
+		const date = new Date()
+
+		data["created_at"] = Date.now()
+		// 604800 = seconds in 1 week
+		data["expires_at"] = Date.now() + 604800 * 3 * 1000
+
+		console.log(data)
 	}
 </script>
 
 <main>
 	<div class="bg-black h-20 md:h-60 border-b-[1px] border-[#323232]" />
+	<form
+		class="bg-gray-400 p-4"
+		action="/api/upload/paste"
+		method="post"
+		on:submit|preventDefault={onSubmit}
+	>
+		<input type="text" id="text" name="text" value={text} />
+		<input type="" />
+		<input class="hover:cursor-pointer" type="submit" />
+	</form>
 </main>
 
 <!-- <main class="index flex justify-center m-8">

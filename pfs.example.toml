@@ -1,0 +1,19 @@
+# See https://toml.io/ for configuration file syntax
+
+# Directory for saving files
+save_dir = "./pfs_storage/"
+
+# Max storage capacity.
+#
+# This is different than the system storage, this defines
+# the maximum intake for the data as a total.
+max_storage = inf
+
+[defaults]
+# Expiration time for data before deletion.
+#
+# Don't expire = inf
+# Expire after 3 Weeks = "3 Weeks"
+# 2 Months = "2 Months"
+# 3 Hours = "3 Hours"
+expiration = inf
