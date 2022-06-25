@@ -1,6 +1,6 @@
 # See https://toml.io/ for configuration file syntax
 
-# Directory for saving files
+# Directory for saving files, will be created if it doesn't exist.
 save_dir = "./pfs_storage/"
 
 # Max storage capacity.
@@ -10,10 +10,11 @@ save_dir = "./pfs_storage/"
 max_storage = inf
 
 [defaults]
-# Expiration time for data before deletion.
+# Expiration time for data before deletion in Unix Timestamp format.
+# Seen as the current time + expiration time.
 #
-# Don't expire = inf
-# Expire after 3 Weeks = "3 Weeks"
-# 2 Months = "2 Months"
-# 3 Hours = "3 Hours"
-expiration = inf
+# Don't expire = 0
+# Expire after 1 day = 86400
+# Expire after 1 week = 604800
+# Expire after 1 month = 2592000
+expiry = 259200 # 3 days

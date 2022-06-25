@@ -56,3 +56,9 @@ type PasteRequest struct {
 	Auto_Delete   bool   `json:"auto_delete"`              // Default: false
 	Password      string `json:"password"`                 // No password: ""
 }
+
+type Config struct {
+	Save_Dir    string
+	Max_Storage int64
+	Expiry      int64
+}

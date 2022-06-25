@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	loadConfig()
+
 	// Get environment variables
 	env := godotenv.Load("./database.env")
 	if env != nil {
@@ -73,6 +75,16 @@ func main() {
 		// TODO: check if hash already exists (pass connection to FillPaste)
 
 		ret := FillPaste(entry)
+
+		// Check if file will exceed remaining free space on database
+		var remaining int64
+
+		err := connection.QueryRow(context.Background(), fmt.Sprintf("SELECT pg_size_pretty(pg_database_size('%s'))", dbname)).Scan(&remaining)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(remaining)
 
 		// Insert entry into database
 

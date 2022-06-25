@@ -1,2 +1,4 @@
 **/tmp
 frontend/node_modules
+backend/.air.toml
+backend/api_spec.yml
