@@ -1,5 +1,6 @@
 package main
 
+/*
 type FileIndex struct {
 	hash          string
 	file          []byte
@@ -22,13 +23,36 @@ type PasteIndex struct {
 	password      string
 }
 
+type DeleteResponse struct {
+	success bool
+	message string
+}
+*/
+
 type ErrorResponse struct {
 	FailedField string
 	Tag         string
 	Value       string
 }
 
-type DeleteResponse struct {
-	success bool
-	message string
+type PasteResponse struct {
+	Admin_Key    string `json:"admin_key"`
+	Download_Url string `json:"download_url"`
+}
+
+// The response body for the POST /api/upload/paste
+type PasteIndex struct {
+	PasteRequest
+	Hash      string `json:"hash"` // Come back to this
+	Downloads int    `json:"downloads"`
+}
+
+// The request body for the POST /api/upload/paste endpoint
+type PasteRequest struct {
+	Text          string `json:"text" validate:"required"` // Required
+	Language      string `json:"language"`                 // Default: "text"
+	Expires_At    int64  `json:"expires_at"`               // Default: 3 days from upload
+	Max_Downloads int    `json:"max_downloads"`            // Default: 0 (unlimited)
+	Auto_Delete   bool   `json:"auto_delete"`              // Default: false
+	Password      string `json:"password"`                 // No password: ""
 }

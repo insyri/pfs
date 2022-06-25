@@ -6,28 +6,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 )
-
-var validate = validator.New()
-
-func ValidatePaste(paste PasteIndex) []*ErrorResponse {
-	var errors []*ErrorResponse
-	err := validate.Struct(paste)
-	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-			var element ErrorResponse
-			element.FailedField = err.StructNamespace()
-			element.Tag = err.Tag()
-			element.Value = err.Param()
-			errors = append(errors, &element)
-		}
-	}
-	return errors
-}
 
 func main() {
 	// Get environment variables
@@ -75,22 +57,27 @@ func main() {
 
 	// Post /api/paste
 	api.Post("/upload/paste", func(c *fiber.Ctx) error {
-		entry := new(PasteIndex)
+		c.Accepts("application/json")
+		entry := new(PasteRequest)
 
 		if err := c.BodyParser(entry); err != nil {
 			return c.Status(400).SendString(err.Error())
 		}
 
 		// Validate values of entry
-		errors := ValidatePaste(*entry)
+		errors := ValidatePaste(entry)
 		if errors != nil {
 			return c.Status(400).JSON(errors)
 		}
 
+		// TODO: check if hash already exists (pass connection to FillPaste)
+
+		ret := FillPaste(entry)
+
 		// Insert entry into database
 
 		// Return the entry
-		return c.JSON(entry)
+		return c.JSON(ret)
 	})
 
 	log.Fatal(app.Listen(":8080"))
