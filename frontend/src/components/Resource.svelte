@@ -18,7 +18,7 @@
 	let code = schema_des(request_schema, request_schema_comments)
 
 	import "../tailwind.css"
-	import Codeblock from "./Codeblock.svelte"
+	import CodeBlock from "./CodeBlock.svelte"
 
 	let showdetails = true // false
 	function invertShowDetails() {
@@ -53,7 +53,7 @@
 		>
 			Schema
 		</div>
-		<Codeblock {code} />
+		<CodeBlock {code} />
 		<div
 			class="border-b-2 bh-white pl-6 p-3 mb-1 bg-blue-50 text-xl font-bold text-gray-800"
 		>
@@ -67,7 +67,7 @@
 			<tr>
 				<td class="pl-6 p-3 text-center">200</td>
 				<td class="text-left">
-					<Codeblock code="things" />
+					<CodeBlock code="things" />
 				</td>
 			</tr>
 		</table>

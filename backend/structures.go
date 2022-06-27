@@ -57,6 +57,13 @@ type PasteRequest struct {
 	Password      string `json:"password"`                 // No password: ""
 }
 
+// The toml library parses integers as floats, so we need this temporary type.
+type PreConfig struct {
+	Save_Dir    string
+	Max_Storage float64
+	Expiry      float64
+}
+
 type Config struct {
 	Save_Dir    string
 	Max_Storage int64

@@ -9,10 +9,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"golang.org/x/sys/unix"
 )
 
 func main() {
-	loadConfig()
+	LoadConfig()
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")
@@ -77,14 +78,40 @@ func main() {
 		ret := FillPaste(entry)
 
 		// Check if file will exceed remaining free space on database
-		var remaining int64
+		// var remaining int64
+		var stat unix.Statfs_t
 
-		err := connection.QueryRow(context.Background(), fmt.Sprintf("SELECT pg_size_pretty(pg_database_size('%s'))", dbname)).Scan(&remaining)
+		wd, err := os.Getwd()
+
+		unix.Statfs(wd, &stat)
+
+		// Available blocks * size per block = available space in bytes
+		fmt.Println(stat.Bavail * uint64(stat.Bsize))
+
+		wa, err := connection.Query(context.Background(), fmt.Sprintf("select pg_database_size( '%s' );", dbname))
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(remaining)
+		for wa.Next() {
+			// var remaining int64
+			// err := wa.Scan(remaining)
+			values, err := wa.Values()
+			if err != nil {
+				return err
+			}
+
+			// fmt.Println(remaining)
+			fmt.Println(values)
+		}
+
+		// values, err := wa.Values()
+
+		// fmt.Println(values)
+
+		// for i := range values {
+		// 	fmt.Println(i)
+		// }
 
 		// Insert entry into database
 

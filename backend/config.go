@@ -3,32 +3,33 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
-func loadConfig() {
+func ConvertConfigs(pc *PreConfig) *Config {
+	return &Config{
+		Save_Dir:    pc.Save_Dir,
+		Expiry:      int64(pc.Expiry),
+		Max_Storage: int64(pc.Max_Storage),
+	}
+}
+
+func LoadConfig() (*Config, error) {
 
 	file, rerr := ioutil.ReadFile("pfs.example.toml")
 	if rerr != nil {
-		log.Fatal(rerr)
+		return nil, rerr
 	}
 
-	var cfg Config
-	terr := toml.Unmarshal(file, &cfg)
+	var pcfg PreConfig
+	terr := toml.Unmarshal(file, &pcfg)
 	if terr != nil {
-		log.Fatal(terr)
+		return nil, terr
 	}
+
+	cfg := ConvertConfigs(&pcfg)
 
 	fmt.Println(cfg.Save_Dir)
-
-	// file, err := os.Open("pfs.example.toml")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// defer file.Close()
-
-	// fmt.Println(file.)
+	return cfg, nil
 }
