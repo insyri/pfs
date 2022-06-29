@@ -1,0 +1,17 @@
+name: "Docker Builds"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        switch: ["", "-d"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./start.sh ${{ matrix.switch }}

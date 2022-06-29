@@ -1,0 +1,36 @@
+name: "Clean up Go Modules"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3.2.0
+        with:
+          go-version: "1.18"
+          go-version-file: "./backend/go.mod"
+
+      - name: Tidy Go Modules
+        run: go mod tidy
+
+      - name: Check if files are modified
+        run: |
+          if git diff-index HEAD --name-only | grep -q "go.*"; then
+            echo "Files have been modified"
+          else 
+            echo "Files have not been modified"
+            exit 0
+          fi
+
+      - name: Submit Pull Request
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "Tidy Go Modules"
+          gh pr create -f --head ${{ github.ref }}
