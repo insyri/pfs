@@ -10,8 +10,8 @@ jobs:
 
     strategy:
       matrix:
-        switch: ["", "-d"]
+        file: ["./dev-docker-compose.yml", "./docker-compose.yml"]
 
     steps:
       - uses: actions/checkout@v2
-      - run: ./start.sh ${{ matrix.switch }}
+      - run: docker compose -f ${{ matrix.file }} up
