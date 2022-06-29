@@ -1,11 +1,11 @@
-name: "Clean up Go Modules"
+name: "Clean up code"
 
 on:
   push:
   pull_request:
 
 jobs:
-  build:
+  Clean:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,6 +16,9 @@ jobs:
 
       - name: Tidy Go Modules
         run: cd backend && go mod tidy
+      
+      - name: Format Code
+        run: cd backend && go fmt 
 
       - name: Check if files are modified
         run: |
@@ -33,7 +36,5 @@ jobs:
           git add .
           git commit -m "Tidy Go Modules"
 
-      - name: Submit Pull Request
-        run: gh pr create --fill
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        run: git push origin ${{ github.ref }}
