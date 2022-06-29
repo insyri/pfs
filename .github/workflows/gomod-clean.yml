@@ -34,6 +34,6 @@ jobs:
           git commit -m "Tidy Go Modules"
 
       - name: Submit Pull Request
-        run: gh pr create -f --head ${{ github.ref }}
+        run: gh pr create --fill
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
