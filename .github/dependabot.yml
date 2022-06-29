@@ -1,18 +1,19 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    directory: "/backend"
+    directory: "./backend"
     schedule:
       interval: "weekly"
     target-branch: "main"
 
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directory: "./frontend"
     schedule:
       interval: "weekly"
     target-branch: "main"
 
   - package-ecosystem: "github-actions"
+    directory: "./.github/workflows"
     schedule:
       interval: "daily"
     target-branch: "main"
