@@ -77,41 +77,36 @@ func main() {
 
 		ret := FillPaste(entry)
 
-		// Check if file will exceed remaining free space on database
-		// var remaining int64
+		// Fetch amount of free space left on storage drive
 		var stat unix.Statfs_t
 
 		wd, err := os.Getwd()
-
-		unix.Statfs(wd, &stat)
-
-		// Available blocks * size per block = available space in bytes
-		fmt.Println(stat.Bavail * uint64(stat.Bsize))
-
-		wa, err := connection.Query(context.Background(), fmt.Sprintf("select pg_database_size( '%s' );", dbname))
 		if err != nil {
 			return err
 		}
 
-		for wa.Next() {
-			// var remaining int64
-			// err := wa.Scan(remaining)
-			values, err := wa.Values()
-			if err != nil {
-				return err
-			}
+		unix.Statfs(wd, &stat)
 
-			// fmt.Println(remaining)
-			fmt.Println(values)
+		// Available blocks * size per block = available space in bytes
+		free_space := stat.Bavail * uint64(stat.Bsize)
+
+		// Fetch database size
+		query := fmt.Sprintf("select pg_database_size( '%s' );", dbname)
+
+		row := connection.QueryRow(context.Background(), query)
+
+		var used_space int64
+
+		if err := row.Scan(&used_space); err != nil {
+			log.Print(err)
 		}
 
-		// values, err := wa.Values()
-
-		// fmt.Println(values)
-
-		// for i := range values {
-		// 	fmt.Println(i)
-		// }
+		// Check if file will exceed remaining free space on storage drive
+		if int64(free_space) < used_space+int64(len(entry.Text)) {
+			// TODO: Make error log better with more information
+			log.Println("Not enough storage to save text file.")
+			return c.SendStatus(507)
+		}
 
 		// Insert entry into database
 
