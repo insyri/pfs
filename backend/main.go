@@ -13,7 +13,12 @@ import (
 )
 
 func main() {
-	LoadConfig()
+	conf, err := LoadConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// use it later
+	fmt.Println(conf)
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")
@@ -62,6 +67,7 @@ func main() {
 	api.Post("/upload/paste", func(c *fiber.Ctx) error {
 		c.Accepts("application/json")
 		entry := new(PasteRequest)
+		var _ = new(PasteResponse)
 
 		if err := c.BodyParser(entry); err != nil {
 			return c.Status(400).SendString(err.Error())
@@ -81,7 +87,7 @@ func main() {
 		var stat unix.Statfs_t
 
 		wd, err := os.Getwd()
-		if err != nil {
+		if err != nil || wd == "" {
 			return err
 		}
 
