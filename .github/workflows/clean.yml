@@ -2,6 +2,8 @@ name: "Clean up code"
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -16,9 +18,9 @@ jobs:
 
       - name: Tidy Go Modules
         run: cd backend && go mod tidy
-      
+
       - name: Format Code
-        run: cd backend && go fmt 
+        run: cd backend && go fmt
 
       - name: Check if files are modified
         run: |
