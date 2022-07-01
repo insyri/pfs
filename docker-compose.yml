@@ -6,11 +6,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend:/app
     depends_on:
       - backend
     container_name: web
-  
+
   backend:
     build: ./backend
     ports:
@@ -21,15 +21,16 @@ services:
       - database
     container_name: api
 
-  # nginx:
-  #   image: nginx
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/conf/:/etc/nginx/conf.d/:ro
-  
+  nginx:
+    image: nginx
+    ports:
+      - "5000:5000"
+    depends_on:
+      - frontend
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+    container_name: nginx
+
   database:
     image: postgres
     env_file:
