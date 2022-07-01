@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Gather modified files
-        if: ${{ env.changed }}
+        if: ${{ env.changed == 'true' }}
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
@@ -41,5 +41,5 @@ jobs:
           git commit -m "Tidy Go Modules"
 
       - name: Push changes
-        if: ${{ env.changed }}
+        if: ${{ env.changed == 'true' }}
         run: git push origin ${{ github.ref }}
