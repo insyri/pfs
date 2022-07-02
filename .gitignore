@@ -3,7 +3,7 @@ frontend/.svelte-kit
 **/tmp
 # pfs.toml
 rmalldockerimages.sh
-dd.sh
+# dd.sh
 backend/pfs.example.toml
 frontend/pfs.example.toml
 nginx/conf/pfs.example.toml

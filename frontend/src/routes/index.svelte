@@ -3,7 +3,7 @@
 
 	let text = "Enter your text here."
 
-	function onSubmit(e) {
+	function onSubmit(e: any) {
 		const formData = new FormData(e.target)
 
 		const data = {}
@@ -23,14 +23,21 @@
 </script>
 
 <main>
-	<div class="bg-black h-20 md:h-60 border-b-[1px] border-[#323232]" />
+	<div class="bg-black h-20 md:h-40 border-b-[1px] border-[#323232]" />
 	<form
-		class="bg-gray-400 p-4"
+		class="bg-black border-[#323232] border-[1px] rounded-lg p-4 m-4"
 		action="/api/upload/paste"
 		method="post"
 		on:submit|preventDefault={onSubmit}
 	>
-		<input type="text" id="text" name="text" value={text} />
+		<input
+			class="bg-[#1d1d1d] border-[#323232] border-[1px] rounded-lg p-4 m-4 text-white"
+			type="text"
+			id="text"
+			placeholder="Enter sadasd text here."
+			value={text}
+		/>
+		<!-- <input type="text" id="text" name="text" value={text} /> -->
 		<input type="" />
 		<input class="hover:cursor-pointer" type="submit" />
 	</form>

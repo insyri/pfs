@@ -1,15 +1,21 @@
 # See https://toml.io/ for configuration file syntax
 
-# Directory for saving files, will be created if it doesn't exist.
-save_dir = "./pfs_storage/"
+[database]
+# Database connection configuration
+user = "hunter_is_a_GOAT"
+password = "bawlz2daWALLZ"
+name = "daBase"            # Name of the database
 
+[system]
+save_dir = "./pfs_storage/" # Directory for saving files, will be created if it doesn't exist.
+
+[defaults]
 # Max storage capacity.
 #
 # This is different than the system storage, this defines
 # the maximum intake for the data as a total.
 max_storage = inf
 
-[defaults]
 # Expiration time for data before deletion in Unix Timestamp format.
 # Seen as the current time + expiration time.
 #

@@ -62,10 +62,16 @@ type PreConfig struct {
 	Save_Dir    string
 	Max_Storage float64
 	Expiry      float64
+	Db_User     string
+	Db_Pass     string
+	Db_Name     string
 }
 
 type Config struct {
 	Save_Dir    string
 	Max_Storage int64
 	Expiry      int64
+	Db_User     string
+	Db_Pass     string
+	Db_Name     string
 }
