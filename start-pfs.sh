@@ -24,7 +24,7 @@ EXAMPLES:
     start-pfs.sh --env=prod
     start-pfs.sh --config=spec.toml --verbose
 "
-OPTS=$(getopt -o e:c:vh --long env:,config:,verbose,help -n 'startpfs' -- "$@")
+OPTS=$(getopt -o e:c:vh --long env:,config:,verbose,help -n 'start-pfs' -- "$@")
 
 verbose_echo() {
     if [ "$VERBOSE" = true ]; then
