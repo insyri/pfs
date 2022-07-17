@@ -57,21 +57,16 @@ type PasteRequest struct {
 	Password      string `json:"password"`                 // No password: ""
 }
 
-// The toml library parses integers as floats, so we need this temporary type.
-type PreConfig struct {
-	Save_Dir    string
-	Max_Storage float64
-	Expiry      float64
-	Db_User     string
-	Db_Pass     string
-	Db_Name     string
-}
-
+// Configuration file, like pfs.toml, pfs.example.toml.
 type Config struct {
-	Save_Dir    string
-	Max_Storage int64
-	Expiry      int64
-	Db_User     string
-	Db_Pass     string
-	Db_Name     string
+	Database struct {
+		User string `mapstructure:"POSTGRES_USER"`
+		Name string `mapstructure:"POSTGRES_DB"`
+		Pass string `mapstructure:"POSTGRES_PASSWORD"`
+	} `mapstructure:"database"`
+	System struct {
+		Save_Dir    string `mapstructure:"save_dir"`
+		Max_Storage int64  `mapstructure:"max_storage"`
+		Expiry      int64  `mapStructure:"expiry"`
+	} `mapstructure:"system"`
 }

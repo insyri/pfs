@@ -9,7 +9,6 @@ POSTGRES_PASSWORD = "bawlz2daWALLZ"
 [system]
 save_dir = "./pfs_storage/" # Directory for saving files, will be created if it doesn't exist.
 
-[defaults]
 # Max storage capacity.
 #
 # This is different than the system storage, this defines

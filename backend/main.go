@@ -23,17 +23,12 @@ var (
 )
 
 func main() {
-	conf, err := LoadConfig()
+	cfg, err := LoadConfig("pfs.example.toml")
 	if err != nil {
 		Error.Fatal(err)
 	}
 
-	Info.Printf("Database Name:     \"%s\"", conf.Db_Name)
-	Info.Printf("Database Password: \"%s\"", conf.Db_Pass)
-	Info.Printf("Database User:     \"%s\"", conf.Db_User)
-	Info.Printf("Expiry:            \"%d\"", conf.Expiry)
-	Info.Printf("Max Storage:       \"%d\"", conf.Max_Storage)
-	Info.Printf("Save Directory:    \"%s\"", conf.Save_Dir)
+	Verbose.Printf("Config out: %+v", cfg)
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")

@@ -1,39 +1,25 @@
 package main
 
 import (
-	"io/ioutil"
-
-	"github.com/BurntSushi/toml"
+	"github.com/spf13/viper"
 )
 
-func ConvertConfigs(pc *PreConfig) *Config {
-	return &Config{
-		Save_Dir:    pc.Save_Dir,
-		Expiry:      int64(pc.Expiry),
-		Max_Storage: int64(pc.Max_Storage),
-		Db_User:     pc.Db_User,
-		Db_Pass:     pc.Db_Pass,
-		Db_Name:     pc.Db_Name,
-	}
-}
+// Searches and loads configuration file
+func LoadConfig(f string) (*Config, error) {
+	viper.SetConfigName(f)
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
 
-func LoadConfig() (*Config, error) {
-
-	// Read TOML file
-	file, rerr := ioutil.ReadFile("pfs.example.toml")
-	if rerr != nil {
-		return nil, rerr
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
 	}
 
-	// Extract TOML entries to PreConfig struct
-	var pcfg PreConfig
-	terr := toml.Unmarshal(file, &pcfg)
-	if terr != nil {
-		return nil, terr
+	var cfg Config
+
+	if err := viper.UnmarshalExact(&cfg); err != nil {
+		return nil, err
 	}
 
-	// Convert PreConfig struct to Config struct (thanks, TOML)
-	cfg := ConvertConfigs(&pcfg)
-
-	return cfg, nil
+	return &cfg, nil
 }
