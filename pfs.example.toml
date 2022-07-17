@@ -2,9 +2,13 @@
 
 [database]
 # Database connection configuration
-user = "hunter_is_a_GOAT"
-password = "bawlz2daWALLZ"
-name = "daBase"            # Name of the database
+POSTGRES_USER = "hunter_is_a_GOAT"
+POSTGRES_DB = "daBase"                                     # Name of the database
+POSTGRES_PASSWORD = "bawlz2daWALLZ"
+POSTGRES_INITDB_ARGS = "--data-checksums"
+POSTGRES_INITDB_WALDIR = "-z"
+POSTGRES_HOST_AUTH_METHOD = "insert text"
+PGDATA = "None, there is no pg data. Stop looking for it."
 
 [system]
 save_dir = "./pfs_storage/" # Directory for saving files, will be created if it doesn't exist.

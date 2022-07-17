@@ -2,27 +2,29 @@
 
 PROD_DPSEC="./docker-compose.yml"
 DEV_DSPEC="./dev-docker-compose.yml"
-CONFIG="./pfs.toml"
+CONFIG="./pfs.example.toml"
 ENV="prod"
 VERBOSE=false
 COLOR="on"
 HELP_MAIN="start-pfs
 
 USAGE:
-    start-pfs.sh <SUBCOMMAND> [FLAGS] [OPTION...]
+    start-pfs.sh [SUBCOMMAND] [FLAGS] [OPTION...]
 
 SUBCOMMANDS:
-    prepare                  Prepares the environment for pfs.
-    start                    Prepares and starts the pfs service.
+    prepare               Prepares the docker environment for pfs.
+    start                 Starts the dockerized pfs service.
+    help                  Outputs the help information.
+    clear                 Clears the ./database.env file.
 
 FLAGS:
-    -h, --help               Shows help information.
-    -e, --env    [dev|prod]  Use dev compose file.        default: prod
-    -c, --config string      Path to configuration file.  default: pfs.toml
-    -C, --color  [on|off]    Enable color output.         default: true
+    -e, --env [dev|prod]  Use dev compose file.        default: prod
+    -c, --config string   Path to configuration file.  default: pfs.toml
+    -C, --color [on|off]  Enable color output.         default: true
 
 OPTIONS:
-    -v, --verbose            Print verbose output.        default: false
+    -h, --help            Shows help information.
+    -v, --verbose         Print verbose output.        default: false
 "
 
 OPTS=$(getopt -o e:c:vhC: --long env:,config:,verbose,help,color: -n 'start-pfs' -- "$@")
@@ -94,23 +96,35 @@ verbose_echo "\$VERBOSE: $VERBOSE"
 verbose_echo "\$COLOR: $COLOR"
 if [ "$1" != "" ]; then verbose_echo "\$1: $1"; fi
 
+# Note, this will not grab multiline strings. If an issue is filed on this, will fix.
 prepare() {
     verbose_echo "Running prepare function"
+    cp "$CONFIG" backend
+    pgkeys=("POSTGRES_USER" "POSTGRES_DB" "POSTGRES_PASSWORD" "POSTGRES_INITDB_ARGS" "POSTGRES_INITDB_WALDIR" "POSTGRES_HOST_AUTH_METHOD" "PGDATA")
+    for key in "${pgkeys[@]}"; do
+        grep "$key" "$CONFIG" >> database.env
+    done
 }
 
 run() {
     verbose_echo "Running run function"
     if [ "$ENV" = "prod" ]; then
-        docker compose -f "$PROD_DPSEC" up -d
+        docker compose -f "$PROD_DPSEC" up
     else
-        docker compose -f "$DEV_DSPEC" up -d
+        docker compose -f "$DEV_DSPEC" up
     fi
 }
 
 
-
-if [ "$1" = "prepare" ]; then
+if [ "$#" = 0 ]; then
+    verbose_echo "\$# is 0"
     prepare
+    run
+else
+    case "$1" in
+        "prepare") prepare;;
+        "start") run;;
+        "help") echo "$HELP_MAIN" && exit;;
+        "clear") echo -n "" > "database.env" && echo "Cleared database environment file." && exit;;
+    esac
 fi
-
-# docker compose -f "$(if [ $ENV = "dev" ]; then echo $DEV_DSPEC; else echo "$PROD_DPSEC"; fi;)" up
