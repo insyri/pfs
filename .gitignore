@@ -3,4 +3,4 @@ frontend/.svelte-kit
 **/tmp
 */pfs.example.toml
 **/pfs.toml
-database.env
+**/database.env

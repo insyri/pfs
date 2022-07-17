@@ -47,17 +47,17 @@ while true; do
     -e | --env)
         shift
         if [ "$1" = "dev" ]; then
-            ENV="dev";
+            ENV="dev"
         elif [ "$1" != "prod" ]; then
             echo "Invalid environment. Valid environments are only dev and prod."
-            exit 1 
+            exit 1
         fi
         shift
         ;;
     -C | --color)
         shift
         if [ "$1" = "off" ]; then
-            COLOR="off";
+            COLOR="off"
         elif [ "$1" != "on" ]; then
             echo "Invalid color. Valid colors are only on and off."
             exit 1
@@ -99,11 +99,15 @@ if [ "$1" != "" ]; then verbose_echo "\$1: $1"; fi
 # Note, this will not grab multiline strings. If an issue is filed on this, will fix.
 prepare() {
     verbose_echo "Running prepare function"
-    cp "$CONFIG" backend
     pgkeys=("POSTGRES_USER" "POSTGRES_DB" "POSTGRES_PASSWORD" "POSTGRES_INITDB_ARGS" "POSTGRES_INITDB_WALDIR" "POSTGRES_HOST_AUTH_METHOD" "PGDATA")
     for key in "${pgkeys[@]}"; do
-        grep "$key" "$CONFIG" >> database.env
+        grep "$key" "$CONFIG" >>database.env
     done
+
+    cp database.env frontend
+    cp database.env backend
+
+    cp "$CONFIG" backend
 }
 
 run() {
@@ -115,16 +119,15 @@ run() {
     fi
 }
 
-
 if [ "$#" = 0 ]; then
     verbose_echo "\$# is 0"
     prepare
     run
 else
     case "$1" in
-        "prepare") prepare;;
-        "start") run;;
-        "help") echo "$HELP_MAIN" && exit;;
-        "clear") echo -n "" > "database.env" && echo "Cleared database environment file." && exit;;
+    "prepare") prepare ;;
+    "start") run ;;
+    "help") echo "$HELP_MAIN" && exit ;;
+    "clear") echo -n "" >"database.env" && echo "Cleared database environment file." && exit ;;
     esac
 fi

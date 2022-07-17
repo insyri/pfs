@@ -3,7 +3,7 @@ package main
 import (
 	"io/ioutil"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/BurntSushi/toml"
 )
 
 func ConvertConfigs(pc *PreConfig) *Config {

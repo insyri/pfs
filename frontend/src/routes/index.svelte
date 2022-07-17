@@ -1,61 +1,60 @@
 <script export="module" lang="ts">
-	import "../tailwind.css"
+import "../tailwind.css"
 
-	let text = "Enter your text here."
+let text = "Enter your text here."
 
-	function onSubmit(e: any) {
-		const formData = new FormData(e.target)
+function onSubmit(e) {
+	const formData = new FormData(e.target)
 
-		const data = {}
-		for (let field of formData) {
-			const [key, value] = field
-			data[key] = value
-		}
-
-		const date = new Date()
-
-		data["created_at"] = Date.now()
-		// 604800 = seconds in 1 week
-		data["expires_at"] = Date.now() + 604800 * 3 * 1000
-
-		console.log(data)
+	const data = {}
+	for (let field of formData) {
+		const [key, value] = field
+		data[key] = value
 	}
+
+	const date = new Date()
+
+	data["created_at"] = Date.now()
+	// 604800 = seconds in 1 week
+	data["expires_at"] = Date.now() + 604800 * 3 * 1000
+
+	let xhr = new XMLHttpRequest()
+	xhr.open("POST", "http://localhost:8080/api/upload/paste", true)
+
+	xhr.setRequestHeader("Accept", "application/json")
+	xhr.setRequestHeader("Content-Type", "application/json")
+	xhr.setRequestHeader("Access-Control-Allow-Origin", "*")
+
+	xhr.onload = () => {
+		if (xhr.status === 200) {
+			console.log(xhr.responseText)
+		} else {
+			console.log("Request failed.  Returned status of " + xhr.status)
+		}
+	}
+
+	xhr.send(JSON.stringify(data))
+
+	console.log(JSON.stringify(data))
+}
 </script>
 
 <main>
-	<div class="bg-black h-20 md:h-40 border-b-[1px] border-[#323232]" />
+	<div class="h-20 border-b-[1px] border-[#323232] bg-black md:h-40" />
 	<form
-		class="bg-black border-[#323232] border-[1px] rounded-lg p-4 m-4"
-		action="/api/upload/paste"
-		method="post"
+		class="m-4 rounded-lg border-[1px] border-[#323232] bg-black p-4"
 		on:submit|preventDefault={onSubmit}
 	>
 		<input
-			class="bg-[#1d1d1d] border-[#323232] border-[1px] rounded-lg p-4 m-4 text-white"
+			class="m-4 rounded-lg border-[1px] border-[#323232] bg-[#1d1d1d] p-4 text-white"
 			type="text"
 			id="text"
-			placeholder="Enter sadasd text here."
-			value={text}
+			name="text"
+			placeholder="Enter your text here."
 		/>
-		<!-- <input type="text" id="text" name="text" value={text} /> -->
-		<input type="" />
-		<input class="hover:cursor-pointer" type="submit" />
+		<input
+			class="duration-250 rounded-lg border-[1px] border-[#323232] bg-white p-4 transition ease-in-out hover:cursor-pointer hover:bg-black hover:text-white"
+			type="submit"
+		/>
 	</form>
 </main>
-
-<!-- <main class="index flex justify-center m-8">
-	<div
-		class="py-8 px-4 border border-indigo-50 shadow-lg w-5/6 h-96 bg-slate-100"
-	>
-		<form on:submit|preventDefault={upload}>
-			<textarea
-				value={text}
-				class="border border-indigo-100 shadow-lg h-72 w-5/6"
-			/>
-			<button type="submit" class="bg-indigo-100 p-2 rounded-full"
-				>Upload!</button
-			>
-		</form>
-	</div>
-	<div />
-</main> -->

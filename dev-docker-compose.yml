@@ -39,6 +39,8 @@ services:
     image: postgres
     env_file:
       - ./database.env
+    volumes:
+      - ./migration.sql:/docker-entrypoint-initdb.d/migration.sql
     ports:
       - "5432:5432"
     container_name: postgres

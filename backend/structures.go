@@ -43,7 +43,7 @@ type PasteResponse struct {
 // The response body for the POST /api/upload/paste
 type PasteIndex struct {
 	PasteRequest
-	Hash      string `json:"hash"` // Come back to this
+	Id        string `json:"id"` // Come back to this
 	Downloads int    `json:"downloads"`
 }
 

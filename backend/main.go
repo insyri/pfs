@@ -6,24 +6,39 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 	"golang.org/x/sys/unix"
 )
 
+var (
+	Verbose = log.New(os.Stderr, color.New(color.FgYellow).Sprint("Verbose")+" ", log.Lmsgprefix|log.Lshortfile)
+	Info    = log.New(os.Stderr, color.New(color.FgBlue).Sprint("Info")+" ", log.Lmsgprefix)
+	Success = log.New(os.Stderr, color.New(color.FgGreen).Sprint("Success")+" ", log.Lmsgprefix)
+	Panic   = log.New(os.Stderr, color.New(color.BgHiRed|color.Bold).Sprint("Panic")+" ", log.Lmsgprefix|log.Llongfile)
+	Error   = log.New(os.Stderr, color.New(color.FgRed).Sprint("Error")+" ", log.Lmsgprefix|log.Llongfile)
+)
+
 func main() {
 	conf, err := LoadConfig()
 	if err != nil {
-		log.Fatal(err)
+		Error.Fatal(err)
 	}
-	// use it later
-	fmt.Println(conf)
+
+	Info.Printf("Database Name:     \"%s\"", conf.Db_Name)
+	Info.Printf("Database Password: \"%s\"", conf.Db_Pass)
+	Info.Printf("Database User:     \"%s\"", conf.Db_User)
+	Info.Printf("Expiry:            \"%d\"", conf.Expiry)
+	Info.Printf("Max Storage:       \"%d\"", conf.Max_Storage)
+	Info.Printf("Save Directory:    \"%s\"", conf.Save_Dir)
 
 	// Get environment variables
 	env := godotenv.Load("./database.env")
 	if env != nil {
-		log.Fatalf("Error loading .env file")
+		Error.Fatal("Error loading .env file")
 	}
 
 	// Extract environment variables
@@ -41,16 +56,19 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		Error.Fatalf("Unable to connect to database: %v\n", err)
 	}
 
 	defer connection.Close(context.Background())
-	fmt.Println("Connected to database")
+	Success.Println("Connected to database")
 
 	// Create a new Fiber app
 	app := fiber.New()
 	api := app.Group("/api")
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
 
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("ok its up")
@@ -82,6 +100,7 @@ func main() {
 		// TODO: check if hash already exists (pass connection to FillPaste)
 
 		ret := FillPaste(entry)
+		fmt.Println(ret.Text)
 
 		// Fetch amount of free space left on storage drive
 		var stat unix.Statfs_t
@@ -104,21 +123,22 @@ func main() {
 		var used_space int64
 
 		if err := row.Scan(&used_space); err != nil {
-			log.Print(err)
+			Error.Fatal(err)
 		}
 
 		// Check if file will exceed remaining free space on storage drive
 		if int64(free_space) < used_space+int64(len(entry.Text)) {
 			// TODO: Make error log better with more information
-			log.Println("Not enough storage to save text file.")
+			Error.Println("Not enough storage to save text file.")
 			return c.SendStatus(507)
 		}
 
 		// Insert entry into database
+		connection.Exec(context.Background(), fmt.Sprintf("INSERT INTO entries (id, raw_text, created_at) VALUES (DEFAULT, '%s', %d)", ret.Text, ret.Expires_At))
 
 		// Return the entry
 		return c.JSON(ret)
 	})
 
-	log.Fatal(app.Listen(":8080"))
+	Error.Fatal(app.Listen(":8080"))
 }
