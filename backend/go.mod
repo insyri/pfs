@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/go-playground/validator/v10 v10.11.0
-	github.com/gofiber/fiber/v2 v2.34.1
+	github.com/gofiber/fiber/v2 v2.35.0
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/joho/godotenv v1.4.0
 )
@@ -30,7 +30,6 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v1.1.0
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fatih/color v1.13.0
 	github.com/go-playground/locales v0.14.0 // indirect
@@ -47,7 +46,7 @@ require (
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/spf13/viper v1.12.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.37.0 // indirect
+	github.com/valyala/fasthttp v1.38.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664
