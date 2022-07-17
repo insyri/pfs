@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: latest
 
+      - name: Install Dependencies
+        working-directory: frontend
+        run: npm ci
+
       - name: Lint
         continue-on-error: true
         working-directory: frontend
@@ -33,7 +37,11 @@ jobs:
         with:
           node-version: latest
 
-      - name: Lint
+      - name: Install Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Format
         working-directory: frontend
         run: npm run format
 

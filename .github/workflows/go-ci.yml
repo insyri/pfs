@@ -23,7 +23,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: ./cli
+          working-directory: cli
 
       - name: Generate Diff
         run: git diff > Go.diff
