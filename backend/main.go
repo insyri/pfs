@@ -3,24 +3,46 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/insyri/pfs/backend/fill"
+	"github.com/insyri/pfs/backend/routes"
+	"github.com/insyri/pfs/backend/structures"
+	"github.com/insyri/pfs/backend/util"
+	"github.com/insyri/pfs/backend/validation"
 	"github.com/jackc/pgx/v4"
-	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 	"golang.org/x/sys/unix"
 )
 
 var (
-	Verbose = log.New(os.Stderr, color.New(color.FgYellow).Sprint("Verbose")+" ", log.Lmsgprefix|log.Lshortfile)
-	Info    = log.New(os.Stderr, color.New(color.FgBlue).Sprint("Info")+" ", log.Lmsgprefix)
-	Success = log.New(os.Stderr, color.New(color.FgGreen).Sprint("Success")+" ", log.Lmsgprefix)
-	Panic   = log.New(os.Stderr, color.New(color.BgHiRed|color.Bold).Sprint("Panic")+" ", log.Lmsgprefix|log.Llongfile)
-	Error   = log.New(os.Stderr, color.New(color.FgRed).Sprint("Error")+" ", log.Lmsgprefix|log.Llongfile)
+	Verbose = util.Verbose
+	Error   = util.Error
+	Panic   = util.Panic
+	Info    = util.Info
+	Success = util.Success
 )
+
+func LoadConfig(f string) (*structures.Config, error) {
+	viper.SetConfigName(f)
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	var cfg structures.Config
+
+	if err := viper.UnmarshalExact(&cfg); err != nil {
+		return nil, err
+	}
+
+	return &cfg, nil
+}
 
 func main() {
 	cfg, err := LoadConfig("pfs.example.toml")
@@ -31,23 +53,24 @@ func main() {
 	Verbose.Printf("Config out: %+v", cfg)
 
 	// Get environment variables
-	env := godotenv.Load("./database.env")
-	if env != nil {
-		Error.Fatal("Error loading .env file")
-	}
+	// env := godotenv.Load("./database.env")
+	// if env != nil {
+	// 	Error.Fatal("Error loading .env file")
+	// }
 
-	// Extract environment variables
-	var (
-		username = os.Getenv("POSTGRES_USER")
-		password = os.Getenv("POSTGRES_PASSWORD")
-		hostname = "database"
-		dbname   = os.Getenv("POSTGRES_DB")
-	)
+	// // Extract environment variables
+	// var (
+	// 	username = os.Getenv("POSTGRES_USER")
+	// 	password = os.Getenv("POSTGRES_PASSWORD")
+	// 	hostname = "database"
+	// 	dbname   = os.Getenv("POSTGRES_DB")
+	// )
 
 	// Connect to database
 	connection, err := pgx.Connect(
 		context.Background(),
-		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname),
+		// fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname),
+		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", cfg.Database.User, cfg.Database.Pass, "database", cfg.Database.Name),
 	)
 
 	if err != nil {
@@ -65,36 +88,31 @@ func main() {
 		AllowOrigins: "*",
 	}))
 
-	api.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("ok its up")
-	})
+	api.Get("/", routes.Base)
 
 	// Get /api/:hash
-	api.Get("/:hash", func(c *fiber.Ctx) error {
-		hash := c.Params("hash")
-
-		return c.SendString(fmt.Sprintf("Hello, %s!", hash))
-	})
+	api.Get("/:hash", routes.Hash)
 
 	// Post /api/paste
 	api.Post("/upload/paste", func(c *fiber.Ctx) error {
+		util.LogAPIConn(c)
 		c.Accepts("application/json")
-		entry := new(PasteRequest)
-		var _ = new(PasteResponse)
+		entry := new(structures.PasteRequest)
+		var _ = new(structures.PasteResponse)
 
 		if err := c.BodyParser(entry); err != nil {
 			return c.Status(400).SendString(err.Error())
 		}
 
 		// Validate values of entry
-		errors := ValidatePaste(entry)
+		errors := validation.ValidatePaste(entry)
 		if errors != nil {
 			return c.Status(400).JSON(errors)
 		}
 
 		// TODO: check if hash already exists (pass connection to FillPaste)
 
-		ret := FillPaste(entry)
+		ret := fill.FillPaste(entry)
 		fmt.Println(ret.Text)
 
 		// Fetch amount of free space left on storage drive
@@ -111,7 +129,7 @@ func main() {
 		free_space := stat.Bavail * uint64(stat.Bsize)
 
 		// Fetch database size
-		query := fmt.Sprintf("select pg_database_size( '%s' );", dbname)
+		query := fmt.Sprintf("select pg_database_size( '%s' );", cfg.Database.Name)
 
 		row := connection.QueryRow(context.Background(), query)
 

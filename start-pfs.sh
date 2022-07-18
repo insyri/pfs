@@ -99,6 +99,7 @@ if [ "$1" != "" ]; then verbose_echo "\$1: $1"; fi
 # Note, this will not grab multiline strings. If an issue is filed on this, will fix.
 prepare() {
     verbose_echo "Running prepare function"
+    clear
     pgkeys=("POSTGRES_USER" "POSTGRES_DB" "POSTGRES_PASSWORD" "POSTGRES_INITDB_ARGS" "POSTGRES_INITDB_WALDIR" "POSTGRES_HOST_AUTH_METHOD" "PGDATA")
     for key in "${pgkeys[@]}"; do
         grep "$key" "$CONFIG" >>database.env
@@ -119,6 +120,11 @@ run() {
     fi
 }
 
+clear() {
+    verbose_echo "Clearing database.env"
+    echo -n "" >"database.env"
+}
+
 if [ "$#" = 0 ]; then
     verbose_echo "\$# is 0"
     prepare
@@ -128,6 +134,6 @@ else
     "prepare") prepare ;;
     "start") run ;;
     "help") echo "$HELP_MAIN" && exit ;;
-    "clear") echo -n "" >"database.env" && echo "Cleared database environment file." && exit ;;
+    "clear") clear && echo "Cleared database environment file." && exit ;;
     esac
 fi

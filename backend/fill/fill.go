@@ -1,11 +1,13 @@
-package main
+package fill
 
 import (
 	"time"
+
+	"github.com/insyri/pfs/backend/structures"
 )
 
-func FillPaste(paste *PasteRequest) PasteIndex {
-	ret := new(PasteIndex)
+func FillPaste(paste *structures.PasteRequest) structures.PasteIndex {
+	ret := new(structures.PasteIndex)
 
 	if paste.Language == "" {
 		ret.Language = "text"

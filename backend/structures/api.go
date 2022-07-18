@@ -1,4 +1,4 @@
-package main
+package structures
 
 /*
 type FileIndex struct {
@@ -55,18 +55,4 @@ type PasteRequest struct {
 	Max_Downloads int    `json:"max_downloads"`            // Default: 0 (unlimited)
 	Auto_Delete   bool   `json:"auto_delete"`              // Default: false
 	Password      string `json:"password"`                 // No password: ""
-}
-
-// Configuration file, like pfs.toml, pfs.example.toml.
-type Config struct {
-	Database struct {
-		User string `mapstructure:"POSTGRES_USER"`
-		Name string `mapstructure:"POSTGRES_DB"`
-		Pass string `mapstructure:"POSTGRES_PASSWORD"`
-	} `mapstructure:"database"`
-	System struct {
-		Save_Dir    string `mapstructure:"save_dir"`
-		Max_Storage int64  `mapstructure:"max_storage"`
-		Expiry      int64  `mapStructure:"expiry"`
-	} `mapstructure:"system"`
 }
