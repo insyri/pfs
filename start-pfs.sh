@@ -3,6 +3,7 @@
 PROD_DPSEC="./docker-compose.yml"
 DEV_DSPEC="./dev-docker-compose.yml"
 CONFIG="./pfs.example.toml"
+DBENV="./database.env"
 ENV="prod"
 VERBOSE=false
 COLOR="on"
@@ -15,16 +16,17 @@ SUBCOMMANDS:
     prepare               Prepares the docker environment for pfs.
     start                 Starts the dockerized pfs service.
     help                  Outputs the help information.
-    clear                 Clears the ./database.env file.
+    clear                 Clears the database environment file.
 
 FLAGS:
-    -e, --env [dev|prod]  Use dev compose file.        default: prod
-    -c, --config string   Path to configuration file.  default: pfs.toml
-    -C, --color [on|off]  Enable color output.         default: true
+    -e, --env [dev|prod]  Use dev compose file.               default: prod
+    -c, --config string   Path to configuration file.         default: pfs.toml
+    -d, --dbenv string    Path to database environment file.  default: database.env
+    -C, --color [on|off]  Enable color output.                default: true
 
 OPTIONS:
     -h, --help            Shows help information.
-    -v, --verbose         Print verbose output.        default: false
+    -v, --verbose         Print verbose output.               default: false
 "
 
 OPTS=$(getopt -o e:c:vhC: --long env:,config:,verbose,help,color: -n 'start-pfs' -- "$@")
@@ -64,7 +66,16 @@ while true; do
         fi
         shift
         ;;
-    -c | --config)
+    -c | --dbenv)
+        shift
+        if [ ! -e "$1" ]; then
+            echo "Database environment file does not exist."
+            exit
+        fi
+        DBENV="$1"
+        shift
+        ;;
+    -d | --config)
         shift
         if [ ! -e "$1" ]; then
             echo "Config file does not exist."
@@ -102,11 +113,11 @@ prepare() {
     clear
     pgkeys=("POSTGRES_USER" "POSTGRES_DB" "POSTGRES_PASSWORD" "POSTGRES_INITDB_ARGS" "POSTGRES_INITDB_WALDIR" "POSTGRES_HOST_AUTH_METHOD" "PGDATA")
     for key in "${pgkeys[@]}"; do
-        grep "$key" "$CONFIG" >>database.env
+        grep "$key" "$CONFIG" >>"$DBENV"
     done
 
-    cp database.env frontend
-    cp database.env backend
+    cp "$DBENV" frontend
+    cp "$DBENV" backend
 
     cp "$CONFIG" backend
 }
@@ -121,8 +132,8 @@ run() {
 }
 
 clear() {
-    verbose_echo "Clearing database.env"
-    echo -n "" >"database.env"
+    verbose_echo "Clearing $DBENV"
+    echo -n "" >"$DBENV"
 }
 
 if [ "$#" = 0 ]; then
