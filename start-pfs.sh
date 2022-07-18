@@ -13,20 +13,21 @@ USAGE:
     start-pfs.sh [SUBCOMMAND] [FLAGS] [OPTION...]
 
 SUBCOMMANDS:
-    prepare               Prepares the docker environment for pfs.
-    start                 Starts the dockerized pfs service.
-    help                  Outputs the help information.
-    clear                 Clears the database environment file.
+    prepare  Prepares the docker environment for pfs.
+    start    Starts the dockerized pfs service.
+    help     Outputs the help information.
+    clear    Clears the database environment file.
 
 FLAGS:
-    -e, --env [dev|prod]  Use dev compose file.               default: prod
-    -c, --config string   Path to configuration file.         default: pfs.toml
-    -d, --dbenv string    Path to database environment file.  default: database.env
-    -C, --color [on|off]  Enable color output.                default: true
+    -e, --env [dev|prod|path/to/file.yml]
+        Use environment specific Docker compose file.             default: prod
+    -c, --config string       Path to configuration file.         default: pfs.toml
+    -d, --dbenv string        Path to database environment file.  default: database.env
 
 OPTIONS:
-    -h, --help            Shows help information.
-    -v, --verbose         Print verbose output.               default: false
+    -h, --help      Shows help information
+    -n, --no-color  Disables color output.
+    -v, --verbose   Print verbose output.
 "
 
 OPTS=$(getopt -o e:c:vhC: --long env:,config:,verbose,help,color: -n 'start-pfs' -- "$@")
@@ -50,20 +51,20 @@ while true; do
         shift
         if [ "$1" = "dev" ]; then
             ENV="dev"
+        elif [ "$1" = "prod" ]; then
+            :
         elif [ "$1" != "prod" ]; then
-            echo "Invalid environment. Valid environments are only dev and prod."
-            exit 1
+            if [ ! -e "$1" ]; then
+                echo "Docker compose file does not exist."
+                exit 1
+            fi
+            ENV="$1"
         fi
         shift
         ;;
     -C | --color)
         shift
-        if [ "$1" = "off" ]; then
-            COLOR="off"
-        elif [ "$1" != "on" ]; then
-            echo "Invalid color. Valid colors are only on and off."
-            exit 1
-        fi
+        COLOR="off"
         shift
         ;;
     -c | --dbenv)
@@ -131,7 +132,7 @@ run() {
     fi
 }
 
-clear() {
+clear_dbe() {
     verbose_echo "Clearing $DBENV"
     echo -n "" >"$DBENV"
 }
@@ -145,6 +146,6 @@ else
     "prepare") prepare ;;
     "start") run ;;
     "help") echo "$HELP_MAIN" && exit ;;
-    "clear") clear && echo "Cleared database environment file." && exit ;;
+    "clear") clear_dbe && echo "Cleared database environment file." && exit ;;
     esac
 fi

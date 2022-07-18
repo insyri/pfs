@@ -1,5 +1,0 @@
-save_dir = "./pfs_storage/"
-max_storage = inf
-
-[defaults]
-expiry = 259200

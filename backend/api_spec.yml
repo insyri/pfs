@@ -78,7 +78,7 @@ POST /paste:
 
 DELETE /:hash:
   description: Deletes a data entry.
-	responses:
+  responses:
     200:
       success: boolean # true
       message: string # "Data entry deleted"
@@ -91,6 +91,6 @@ DELETE /:hash:
     404:
       success: boolean # false
       message: string # "Data entry not found"
-      
+
   parameters:
-		admin_key: string
+    admin_key: string
