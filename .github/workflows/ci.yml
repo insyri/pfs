@@ -46,8 +46,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup
+        run: |
+          mv ./shfmt_v3.5.1_linux_amd64 ./shfmt
+          chmod +x ./shfmt
+
       - name: Format
-        run: ./shfmt_v3.5.1_linux_amd64 -d -bn -i 4 ./start-pfs.sh
+        run: /shfmt -d -bn -i 4 ./start-pfs.sh
 
       - name: Generate Diff
         run: git diff > Shell.diff

@@ -16,4 +16,4 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: ./start-pfs -e ${{ matrix.env }} -v
+      - run: ./start-pfs.sh -e ${{ matrix.env }} -v
