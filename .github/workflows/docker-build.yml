@@ -1,4 +1,4 @@
-name: "Build Docker Image"
+name: "Docker Image"
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
   pull_request:
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        file: ["./dev-docker-compose.yml", "./docker-compose.yml"]
+        env: ["dev", "prod"]
 
     steps:
       - uses: actions/checkout@v3
-      - run: docker compose -f ${{ matrix.file }} build
+      - run: ./start-pfs -e ${{ matrix.env }} -v

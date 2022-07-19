@@ -2,7 +2,7 @@
 
 PROD_DPSEC="./docker-compose.yml"
 DEV_DSPEC="./dev-docker-compose.yml"
-CONFIG="./pfs.example.toml"
+CONFIG="./pfs.toml"
 DBENV="./database.env"
 ENV="prod"
 VERBOSE=false
@@ -15,14 +15,16 @@ USAGE:
 SUBCOMMANDS:
     prepare  Prepares the docker environment for pfs.
     start    Starts the dockerized pfs service.
+    build    Builds the pfs Docker image.
     help     Outputs the help information.
     clear    Clears the database environment file.
 
 FLAGS:
     -e, --env [dev|prod|path/to/file.yml]
-        Use environment specific Docker compose file.             default: prod
-    -c, --config string       Path to configuration file.         default: pfs.toml
-    -d, --dbenv string        Path to database environment file.  default: database.env
+        Use environment specific Docker compose file.  default: prod
+    -c, --config string  Path to configuration file.   default: pfs.toml
+    -d, --dbenv string                                 default: database.env
+        Path to database environment file, used in the Docker compose file.
 
 OPTIONS:
     -h, --help      Shows help information
@@ -127,14 +129,28 @@ run() {
     verbose_echo "Running run function"
     if [ "$ENV" = "prod" ]; then
         docker compose -f "$PROD_DPSEC" up
-    else
+    elif [ "$ENV" = "dev" ]; then
         docker compose -f "$DEV_DSPEC" up
+    else
+        docker compose -f "$ENV" up
     fi
 }
 
 clear_dbe() {
     verbose_echo "Clearing $DBENV"
     echo -n "" >"$DBENV"
+}
+
+build() {
+    prepare
+    verbose_echo "Running build function"
+    if [ "$ENV" = "prod" ]; then
+        docker compose -f "$PROD_DPSEC" build
+    elif [ "$ENV" = "dev" ]; then
+        docker compose -f "$DEV_DSPEC" build
+    else
+        docker compose -f "$ENV" build
+    fi
 }
 
 if [ "$#" = 0 ]; then
@@ -145,6 +161,7 @@ else
     case "$1" in
     "prepare") prepare ;;
     "start") run ;;
+    "build") build ;;
     "help") echo "$HELP_MAIN" && exit ;;
     "clear") clear_dbe && echo "Cleared database environment file." && exit ;;
     esac
