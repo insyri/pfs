@@ -52,7 +52,7 @@ jobs:
           chmod +x ./shfmt
 
       - name: Format
-        run: /shfmt -d -bn -i 4 ./start-pfs.sh
+        run: ./shfmt -d -bn -i 4 ./start-pfs.sh
 
       - name: Generate Diff
         run: git diff > Shell.diff
