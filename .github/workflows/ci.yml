@@ -26,9 +26,11 @@ jobs:
       - run: cat Go.diff
 
       - name: Upload Diff as Artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           path: Go.diff
+          name: Go.diff
   Shell:
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +52,8 @@ jobs:
           chmod +x ./shfmt
 
       - name: Format
-        run: ./shfmt -d -bn -i 4 ./start-pfs.sh
+        continue-on-error: true
+        run: ./shfmt -w -d -bn -i 4 ./start-pfs.sh
 
       - name: Generate Diff
         run: git diff > Shell.diff
@@ -58,9 +61,11 @@ jobs:
       - run: cat Shell.diff
 
       - name: Upload Diff as Artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           path: Shell.diff
+          name: Shell.diff
   Node:
     name: Svelte/TS
     runs-on: ubuntu-latest
@@ -94,13 +99,16 @@ jobs:
       - run: cat SvelteTS.diff
 
       - name: Upload Diff as Artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           path: SvelteTS.diff
+          name: SvelteTS.diff
   Push:
     runs-on: ubuntu-latest
     name: Push Changes
     needs: [Go, Shell, Node]
+    if: github.event_name != 'pull_request'
     env:
       CHANGED: false
     steps:
