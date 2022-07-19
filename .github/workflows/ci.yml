@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Format and Lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: cli
+
+      - name: Generate Diff
+        run: git diff > Go.diff
+
+      - name: Upload Diff as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: Go.diff
+  Shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Lint
+        continue-on-error: true
+        run: shellcheck ./start-pfs.sh
+        # shellcheck is already installed on GitHub Actions CI machines
+
+      - name: Install shfmt
+        run: gh release download -R mvdan/sh --pattern shfmt_v3.5.1_linux_amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Format
+        run: shfmt -d -bn -i 4 ./start-pfs.sh
+
+      - name: Generate Diff
+        run: git diff > Shell.diff
+
+      - name: Upload Diff as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: Shell.diff
+  Node:
+    name: Svelte/TS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Install Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        continue-on-error: true
+        working-directory: frontend
+        run: npm run build
+
+      - name: Lint
+        continue-on-error: true
+        working-directory: frontend
+        run: npm run check
+
+      - name: Format
+        working-directory: frontend
+        run: npm run format
+
+      - name: Generate Diff
+        run: |
+          git diff > SvelteTS.diff
+
+      - name: Upload Diff as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: SvelteTS.diff
+  Push:
+    runs-on: ubuntu-latest
+    name: Push Changes
+    needs: [Go, Shell, Node]
+    env:
+      CHANGED: false
+    steps:
+      - uses: actions/checkout@v3
+
+      # - name: Checkout Branch
+      #   run: git checkout -b ci-format
+
+      - name: Retrieve Go CI Changes
+        uses: actions/download-artifact@v3
+        with:
+          name: Go.diff
+
+      - name: Retrieve Svelte/TS CI Changes
+        uses: actions/download-artifact@v3
+        with:
+          name: SvelteTS.diff
+
+      - name: Retrieve Shell CI Changes
+        uses: actions/download-artifact@v3
+        with:
+          name: Shell.diff
+
+      - name: Apply Diffs
+        run: |
+          git apply --apply --summary --allow-empty --include backend Go.diff 
+          git apply --apply --summary --allow-empty --include frontend SvelteTS.diff
+          git apply --apply --summary --allow-empty Shell.diff
+
+      - name: Check if a change has been made
+        continue-on-error: true
+        run: |
+          git diff --quiet --exit-code HEAD
+          if [ "$?" = "0" ]; then
+            echo "CHANGED=true" >> $GITHUB_ENV
+          fi
+      - name: Setup Git CI Commiter Information
+        if: env.CHANGED == true
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+      - name: Push changes
+        if: env.CHANGED == true
+        run: |
+          git add .
+          git commit -m "Format Code"
+          git push origin ${{ github.ref }}

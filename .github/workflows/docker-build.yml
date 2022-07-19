@@ -1,4 +1,4 @@
-name: "Docker Builds"
+name: "Build Docker Image"
 
 on:
   push:
@@ -15,5 +15,5 @@ jobs:
         file: ["./dev-docker-compose.yml", "./docker-compose.yml"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: docker compose -f ${{ matrix.file }} build
