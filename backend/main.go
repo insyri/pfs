@@ -47,7 +47,7 @@ func LoadConfig(f string) (*structures.Config, error) {
 }
 
 func main() {
-	cfg, err := LoadConfig("pfs.example.toml")
+																		cfg, err := LoadConfig("pfs.example.toml")
 	if err != nil {
 		Error.Fatal(err)
 	}
@@ -57,7 +57,6 @@ func main() {
 	// Connect to database
 	pool, err := pgx.Connect(
 		context.Background(),
-		// fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname),
 		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", cfg.Database.User, cfg.Database.Pass, "database", cfg.Database.Name),
 	)
 

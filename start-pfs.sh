@@ -16,7 +16,7 @@ SUBCOMMANDS:
     prepare  Prepares the docker environment for pfs.
     start    Starts the dockerized pfs service.
     build    Builds the pfs Docker image.
-    help     Outputs the help information.
+    help     Shows help information.
     clear    Clears the database environment file.
 
 FLAGS:
@@ -27,12 +27,12 @@ FLAGS:
         Path to database environment file, used in the Docker compose file.
 
 OPTIONS:
-    -h, --help      Shows help information
+    -h, --help      Shows help information.
     -n, --no-color  Disables color output.
     -v, --verbose   Print verbose output.
 "
 
-OPTS=$(getopt -o e:c:vhC: --long env:,config:,verbose,help,color: -n 'start-pfs' -- "$@")
+OPTS=$(getopt -o d:e:c:vhn --long dbenv:env:,config:,verbose,help,no-color: -n 'start-pfs' -- "$@")
 
 verbose_echo() {
     if [ "$VERBOSE" = true ]; then
@@ -47,7 +47,7 @@ fi
 
 eval set -- "$OPTS"
 
-while true; do
+while           true; do
     case "$1" in
     -e | --env)
         shift
@@ -69,7 +69,7 @@ while true; do
         COLOR="off"
         shift
         ;;
-    -c | --dbenv)
+    -d | --dbenv)
         shift
         if [ ! -e "$1" ]; then
             echo "Database environment file does not exist."
@@ -78,7 +78,7 @@ while true; do
         DBENV="$1"
         shift
         ;;
-    -d | --config)
+    -c | --config)
         shift
         if [ ! -e "$1" ]; then
             echo "Config file does not exist."
@@ -103,6 +103,8 @@ while true; do
     esac
 done
 
+verbose_echo "Parsed as"
+verbose_echo "$OPTS"
 verbose_echo "Recieved options:"
 verbose_echo "\$ENV: $ENV"
 verbose_echo "\$CONFIG: $CONFIG"

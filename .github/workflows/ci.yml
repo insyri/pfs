@@ -2,11 +2,7 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   Go:
@@ -26,6 +22,8 @@ jobs:
 
       - name: Generate Diff
         run: git diff > Go.diff
+
+      - run: cat Go.diff
 
       - name: Upload Diff as Artifact
         uses: actions/upload-artifact@v3
@@ -56,6 +54,8 @@ jobs:
 
       - name: Generate Diff
         run: git diff > Shell.diff
+
+      - run: cat Shell.diff
 
       - name: Upload Diff as Artifact
         uses: actions/upload-artifact@v3
@@ -91,6 +91,8 @@ jobs:
         run: |
           git diff > SvelteTS.diff
 
+      - run: cat SvelteTS.diff
+
       - name: Upload Diff as Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -104,23 +106,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Checkout Branch
-      #   run: git checkout -b ci-format
-
-      - name: Retrieve Go CI Changes
+      - name: Retrieve Diff Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Go.diff
+          path: ./artifacts/
 
-      - name: Retrieve Svelte/TS CI Changes
-        uses: actions/download-artifact@v3
-        with:
-          name: SvelteTS.diff
-
-      - name: Retrieve Shell CI Changes
-        uses: actions/download-artifact@v3
-        with:
-          name: Shell.diff
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ./artifacts/
 
       - name: Apply Diffs
         run: |
