@@ -29,19 +29,19 @@ pfs uses [Docker](https://www.docker.com/) to create and manage the programs use
 ```bash
 git clone https://github.com/insyri/pfs
 cd pfs
-./start-pfs
+# Create and populate ./pfs.toml, or use the example: ./pfs.example.toml
+chmod +x ./start-pfs.sh
+./start-pfs.sh --config ./pfs.example.toml
 ```
 
 ## Development
 
 pfs has a [contributing guide](./.github/CONTRIBUTING.md), it contains contributing guidelines and more in-depth development setup specifications.
 
-If you want to build and run pfs right away, you can run this through
-
 On \*nix[^1] systems, users can run this one liner in the project directory:
 
 ```bash
-./start-pfs.sh --env dev
+./start-pfs.sh --env dev --config ./pfs.example.toml
 ```
 
 For Windows systems, users will have to use WSL and open the project inside the Linux file system.
