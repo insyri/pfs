@@ -1,9 +1,9 @@
 <script export="module" lang="ts">
 import "../tailwind.css"
 
-let text = "Enter your text here."
+// let text = "Enter your text here."
 
-function onSubmit(e) {
+function onSubmit(e: { target: any }) {
 	const formData = new FormData(e.target)
 
 	const data = {}
@@ -12,7 +12,7 @@ function onSubmit(e) {
 		data[key] = value
 	}
 
-	const date = new Date()
+	// const date = new Date()
 
 	data["created_at"] = Date.now()
 	// 604800 = seconds in 1 week

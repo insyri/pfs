@@ -1,6 +1,8 @@
 import type { ResourceParams } from "./types";
 
-export default [{
+export default [{}] as ResourceParams[];
+
+/*
   method: "GET",
   url: "/:file",
   short_description: "Returns the contents of the file",
@@ -15,4 +17,4 @@ export default [{
 
     }
   }]
-}] as ResourceParams[];
+*/

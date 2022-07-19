@@ -1,6 +1,6 @@
 <script lang="ts">
-	import "../tailwind.css"
-	import Resource from "../components/Resource.svelte"
+import "../tailwind.css"
+import Resource from "../components/Resource.svelte"
 </script>
 
 <main class="m-auto w-[900px]">
@@ -20,11 +20,13 @@
 				},
 			]}
 			request_schema_comments="Only needed if the file needs a password. Body is not needed if the file is public."
+		/>
+		<!--
 			response_examples={[
 				{
 					http_code: 200,
 				},
 			]}
-		/>
+		 -->
 	</div>
 </main>
