@@ -21,7 +21,8 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: cli
+          args: --fix
+          working-directory: backend
 
       - name: Generate Diff
         run: git diff > Go.diff
@@ -46,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Format
-        run: shfmt -d -bn -i 4 ./start-pfs.sh
+        run: ./shfmt_v3.5.1_linux_amd64 -d -bn -i 4 ./start-pfs.sh
 
       - name: Generate Diff
         run: git diff > Shell.diff
