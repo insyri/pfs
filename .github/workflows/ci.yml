@@ -76,12 +76,10 @@ jobs:
         run: npm ci
 
       - name: Build
-        continue-on-error: true
         working-directory: frontend
         run: npm run build
 
       - name: Lint
-        continue-on-error: true
         working-directory: frontend
         run: npm run check
 

@@ -20,10 +20,12 @@ import (
 var (
 	Verbose = util.Verbose
 	Error   = util.Error
-	Panic   = util.Panic
+	// Panic   = util.Panic
 	Info    = util.Info
 	Success = util.Success
 )
+
+var ISER = "{\"Error\": \"Internal Server Error\""
 
 func LoadConfig(f string) (*structures.Config, error) {
 	viper.SetConfigName(f)
@@ -52,22 +54,8 @@ func main() {
 
 	Verbose.Printf("Config out: %+v", cfg)
 
-	// Get environment variables
-	// env := godotenv.Load("./database.env")
-	// if env != nil {
-	// 	Error.Fatal("Error loading .env file")
-	// }
-
-	// // Extract environment variables
-	// var (
-	// 	username = os.Getenv("POSTGRES_USER")
-	// 	password = os.Getenv("POSTGRES_PASSWORD")
-	// 	hostname = "database"
-	// 	dbname   = os.Getenv("POSTGRES_DB")
-	// )
-
 	// Connect to database
-	connection, err := pgx.Connect(
+	pool, err := pgx.Connect(
 		context.Background(),
 		// fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, hostname, dbname),
 		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", cfg.Database.User, cfg.Database.Pass, "database", cfg.Database.Name),
@@ -77,12 +65,17 @@ func main() {
 		Error.Fatalf("Unable to connect to database: %v\n", err)
 	}
 
-	defer connection.Close(context.Background())
+	defer pool.Close(context.Background())
 	Success.Println("Connected to database")
 
 	// Create a new Fiber app
 	app := fiber.New()
 	api := app.Group("/api")
+
+	app.Use(func(c *fiber.Ctx) error {
+		util.LogAPIConn(c)
+		return fmt.Errorf("")
+	})
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -95,10 +88,8 @@ func main() {
 
 	// Post /api/paste
 	api.Post("/upload/paste", func(c *fiber.Ctx) error {
-		util.LogAPIConn(c)
 		c.Accepts("application/json")
-		entry := new(structures.PasteRequest)
-		var _ = new(structures.PasteResponse)
+		entry := &structures.PasteRequest{}
 
 		if err := c.BodyParser(entry); err != nil {
 			return c.Status(400).SendString(err.Error())
@@ -120,10 +111,14 @@ func main() {
 
 		wd, err := os.Getwd()
 		if err != nil || wd == "" {
-			return err
+			Info.Print(err)
+			return c.Status(500).JSON(ISER)
 		}
 
-		unix.Statfs(wd, &stat)
+		if err := unix.Statfs(wd, &stat); err != nil {
+			Info.Print(err)
+			return c.Status(500).JSON(ISER)
+		}
 
 		// Available blocks * size per block = available space in bytes
 		free_space := stat.Bavail * uint64(stat.Bsize)
@@ -131,12 +126,13 @@ func main() {
 		// Fetch database size
 		query := fmt.Sprintf("select pg_database_size( '%s' );", cfg.Database.Name)
 
-		row := connection.QueryRow(context.Background(), query)
+		row := pool.QueryRow(context.Background(), query)
 
 		var used_space int64
 
 		if err := row.Scan(&used_space); err != nil {
-			Error.Fatal(err)
+			Info.Print(err)
+			return c.Status(500).JSON(ISER)
 		}
 
 		// Check if file will exceed remaining free space on storage drive
@@ -147,7 +143,13 @@ func main() {
 		}
 
 		// Insert entry into database
-		connection.Exec(context.Background(), fmt.Sprintf("INSERT INTO entries (id, raw_text, created_at) VALUES (DEFAULT, '%s', %d)", ret.Text, ret.Expires_At))
+		if _, err := pool.Exec(context.Background(),
+			"INSERT INTO entries (id, raw_text, created_at) VALUES (DEFAULT, '$1', $2)",
+			ret.Text, ret.Expires_At); err != nil {
+			Info.Print(err)
+
+			return c.Status(500).JSON(ISER)
+		}
 
 		// Return the entry
 		return c.JSON(ret)
