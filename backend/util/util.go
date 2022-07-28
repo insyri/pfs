@@ -16,6 +16,7 @@ var (
 	Error   = log.New(os.Stderr, color.New(color.FgRed).Sprint("Error")+" ", log.Lmsgprefix|log.Llongfile)
 )
 
-func LogAPIConn(c *fiber.Ctx) {
+func LogAPIConn(c *fiber.Ctx) error {
 	Info.Printf("%s => %s from User-Agent %s\n", c.Method(), c.Path(), c.Context().UserAgent())
+	return c.Next()
 }

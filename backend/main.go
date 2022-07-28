@@ -12,6 +12,7 @@ import (
 	"github.com/insyri/pfs/backend/structures"
 	"github.com/insyri/pfs/backend/util"
 	"github.com/insyri/pfs/backend/validation"
+	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
 	"github.com/spf13/viper"
 	"golang.org/x/sys/unix"
@@ -47,7 +48,7 @@ func LoadConfig(f string) (*structures.Config, error) {
 }
 
 func main() {
-																		cfg, err := LoadConfig("pfs.example.toml")
+	cfg, err := LoadConfig("pfs.example.toml")
 	if err != nil {
 		Error.Fatal(err)
 	}
@@ -72,8 +73,7 @@ func main() {
 	api := app.Group("/api")
 
 	app.Use(func(c *fiber.Ctx) error {
-		util.LogAPIConn(c)
-		return fmt.Errorf("")
+		return util.LogAPIConn(c)
 	})
 
 	app.Use(cors.New(cors.Config{
@@ -103,7 +103,6 @@ func main() {
 		// TODO: check if hash already exists (pass connection to FillPaste)
 
 		ret := fill.FillPaste(entry)
-		fmt.Println(ret.Text)
 
 		// Fetch amount of free space left on storage drive
 		var stat unix.Statfs_t
@@ -142,16 +141,17 @@ func main() {
 		}
 
 		// Insert entry into database
-		if _, err := pool.Exec(context.Background(),
-			"INSERT INTO entries (id, raw_text, created_at) VALUES (DEFAULT, '$1', $2)",
-			ret.Text, ret.Expires_At); err != nil {
+		var ret_id pgtype.Int8
+		if err := pool.QueryRow(context.Background(), fmt.Sprintf(
+			"INSERT INTO entries (id, raw_text, expires_at) VALUES (DEFAULT, '%s', %d) RETURNING id",
+			ret.Text, ret.Expires_At)).Scan(&ret_id); err != nil {
 			Info.Print(err)
 
 			return c.Status(500).JSON(ISER)
 		}
 
 		// Return the entry
-		return c.JSON(ret)
+		return c.JSON(ret_id)
 	})
 
 	Error.Fatal(app.Listen(":8080"))

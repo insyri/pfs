@@ -16,7 +16,7 @@ func FillPaste(paste *structures.PasteRequest) structures.PasteIndex {
 	}
 
 	if paste.Expires_At == 0 {
-		paste.Expires_At = time.Now().Add(time.Hour * 24 * 7 * 3).Unix()
+		paste.Expires_At = time.Now().Add(time.Hour * 24 * 7 * 3).UnixMilli()
 	}
 
 	ret.Text = paste.Text

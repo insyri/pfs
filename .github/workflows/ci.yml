@@ -36,27 +36,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Lint
-        continue-on-error: true
+      - name: Lint and Format
         run: shellcheck ./start-pfs.sh
         # shellcheck is already installed on GitHub Actions CI machines
 
-      - name: Install shfmt
-        run: gh release download -R mvdan/sh --pattern shfmt_v3.5.1_linux_amd64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup
-        run: |
-          mv ./shfmt_v3.5.1_linux_amd64 ./shfmt
-          chmod +x ./shfmt
-
-      - name: Format
-        continue-on-error: true
-        run: ./shfmt -w -d -bn -i 4 ./start-pfs.sh
-
       - name: Generate Diff
-        run: git diff > Shell.diff
+        run: shellcheck -f diff ./start-pfs.sh > Shell.diff
 
       - run: cat Shell.diff
 
@@ -93,8 +78,7 @@ jobs:
         run: npm run format
 
       - name: Generate Diff
-        run: |
-          git diff > SvelteTS.diff
+        run: git diff > SvelteTS.diff
 
       - run: cat SvelteTS.diff
 
@@ -125,15 +109,15 @@ jobs:
 
       - name: Apply Diffs
         run: |
-          git apply --apply --summary --allow-empty --include ./backend      ./artifacts/Go/Go.diff 
-          git apply --apply --summary --allow-empty --include ./frontend     ./artifacts/SvelteTS/SvelteTS.diff
-          git apply --apply --summary --allow-empty --include ./start-pfs.sh ./artifacts/Shell/Shell.diff
+          git apply ./artifacts/Go/Go.diff 
+          git apply ./artifacts/SvelteTS/SvelteTS.diff
+          git apply ./artifacts/Shell/Shell.diff
 
       - name: Check if a change has been made
         continue-on-error: true
         run: |
           git diff --quiet --exit-code HEAD
-          if [ "$?" = "0" ]; then
+          if [ "$?" = "1" ]; then
             echo "CHANGED=true" >> $GITHUB_ENV
           fi
 

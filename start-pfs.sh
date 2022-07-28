@@ -47,7 +47,7 @@ fi
 
 eval set -- "$OPTS"
 
-while           true; do
+while true; do
     case $1 in
     -e | --env)
         shift
@@ -125,6 +125,10 @@ prepare() {
     cp "$DBENV" backend
 
     cp "$CONFIG" backend
+
+    if [ ! -d "frontend/node_modules" ]; then
+        cd frontend && npm install && cd ..
+    fi
 }
 
 run() {
