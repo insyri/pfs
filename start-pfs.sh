@@ -51,7 +51,7 @@ while true; do
     case $1 in
     -e | --env)
         shift
-        if [ $1 = "dev" ]; then
+        if [ "$1" = "dev" ]; then
             ENV="dev"
         elif [ "$1" = "prod" ]; then
             :
