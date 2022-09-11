@@ -29,32 +29,33 @@ function onSubmit(e: { target: any }) {
 		if (xhr.status === 200) {
 			console.log(xhr.responseText)
 		} else {
-			console.log("Request failed.  Returned status of " + xhr.status)
+			console.log("Request failed. Returned status of " + xhr.status)
 		}
 	}
 
 	xhr.send(JSON.stringify(data))
 
-	console.log(JSON.stringify(data))
+	console.log("Text:" + data["text"])
 }
 </script>
 
-<main>
-	<div class="h-20 border-b-[1px] border-[#323232] bg-black md:h-40" />
-	<form
-		class="m-4 rounded-lg border-[1px] border-[#323232] bg-black p-4"
-		on:submit|preventDefault={onSubmit}
-	>
-		<input
-			class="m-4 rounded-lg border-[1px] border-[#323232] bg-[#1d1d1d] p-4 text-white"
-			type="text"
-			id="text"
-			name="text"
-			placeholder="Enter your text here."
-		/>
-		<input
-			class="duration-250 rounded-lg border-[1px] border-[#323232] bg-white p-4 transition ease-in-out hover:cursor-pointer hover:bg-black hover:text-white"
-			type="submit"
-		/>
-	</form>
+<main class="max-w-8xl m-4 bg-white shadow-lg shadow-gray-700">
+	<div class="m-auto h-[96vh] w-[80%] max-w-4xl">
+		<form on:submit={onSubmit}>
+			<!-- File upload button -->
+			<!-- Textbox -->
+			<textarea
+				required
+				id="text"
+				class="mt-20 h-[60vh] w-full rounded-md border border-slate-600 bg-slate-200 p-2 text-sm"
+				placeholder="Enter your text here."
+			/>
+			<!-- Other buttons + submit -->
+			<!-- <input type="submit" value="Submit"> -->
+			<input
+				class="w-35 float-right h-10 rounded-md bg-slate-500 font-semibold text-slate-100"
+				type="submit"
+			/>
+		</form>
+	</div>
 </main>

@@ -109,9 +109,9 @@ jobs:
 
       - name: Apply Diffs
         run: |
-          git apply ./artifacts/Go/Go.diff 
-          git apply ./artifacts/SvelteTS/SvelteTS.diff
-          git apply ./artifacts/Shell/Shell.diff
+          git apply --allow-empty ./artifacts/Go/Go.diff 
+          git apply --allow-empty ./artifacts/SvelteTS/SvelteTS.diff
+          git apply --allow-empty ./artifacts/Shell/Shell.diff
 
       - name: Check if a change has been made
         continue-on-error: true

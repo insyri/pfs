@@ -17,6 +17,6 @@ var (
 )
 
 func LogAPIConn(c *fiber.Ctx) error {
-	Info.Printf("%s => %s from User-Agent %s\n", c.Method(), c.Path(), c.Context().UserAgent())
+	Info.Printf("%s => %s with body content: %s\n", c.Method(), c.Path(), c.Request().Body())
 	return c.Next()
 }

@@ -104,6 +104,8 @@ func main() {
 
 		ret := fill.FillPaste(entry)
 
+		Info.Print("Paste: ", ret)
+
 		// Fetch amount of free space left on storage drive
 		var stat unix.Statfs_t
 
